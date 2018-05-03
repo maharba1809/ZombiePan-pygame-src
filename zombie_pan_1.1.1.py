@@ -214,9 +214,9 @@ def end():
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:    
-                        engineExit = True
-                        endExit = True
+                if event.key == pygame.K_ESCAPE:    
+                    engineExit = True
+                    endExit = True
         
         gameDisplay.fill( black )
         draw_sprite2( background )        
@@ -509,7 +509,7 @@ def game_maps():
                         if(maps.index(m)==10):total = 29
                         if(maps.index(m)==11):total = 31
                         if(maps.index(m)==12):total = 35
-                        if(maps.index(m)==13):total = 4
+                        if(maps.index(m)==13):total = 40
                         time.sleep(0.5) 
                     
                 
