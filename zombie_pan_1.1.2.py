@@ -2,29 +2,41 @@ import pygame
 import time
 import random
 import re
+import os;
+
+#defined as globals
+assetsDir = 'assets/'
+
+#check if folder exists
+if not os.path.isdir(assetsDir):
+    print ("No folder assets was found", assetsDir)
+    pygame.quit()
+    quit()
 
 
 pygame.init()
-
-pygame.mixer.music.load('assets/Little Swans Game.ogg')
-pygame.display.set_icon( pygame.image.load('assets/icon_zombie.png')) 
+#audio definition
+pygame.mixer.music.load(assetsDir + 'Little Swans Game.ogg')
+pygame.display.set_icon( pygame.image.load(assetsDir + 'icon_zombie.png')) 
 pygame.mixer.pre_init(frequency=44100, size=-32, channels=2, buffer=4096)
-sound_bullet = pygame.mixer.Sound(file = 'assets/single_water_drop.ogg')
+sound_bullet = pygame.mixer.Sound(file = assetsDir + 'single_water_drop.ogg')
 sound_bullet.set_volume(0.5)
-sound_col = pygame.mixer.Sound(file = 'assets/comical_liquid_gel_splat.ogg')
+sound_col = pygame.mixer.Sound(file = assetsDir + 'comical_liquid_gel_splat.ogg')
 sound_col.set_volume(0.5)
-sound_err = pygame.mixer.Sound(file = 'assets/327736__distillerystudio__error-03.ogg')
+sound_err = pygame.mixer.Sound(file = assetsDir + '327736__distillerystudio__error-03.ogg')
 sound_err.set_volume(0.5)
-sound_hel = pygame.mixer.Sound(file = 'assets/helicopter.ogg')
+sound_hel = pygame.mixer.Sound(file = assetsDir + 'helicopter.ogg')
 sound_hel.set_volume(0.2)
-sound_loser = pygame.mixer.Sound(file = 'assets/113988__kastenfrosch__verloren.ogg')
+sound_loser = pygame.mixer.Sound(file = assetsDir + '113988__kastenfrosch__verloren.ogg')
 sound_hel.set_volume(0.5)
-sound_winer = pygame.mixer.Sound(file = 'assets/270528littlerobotsoundfactoryjingle-win-00.ogg')
+sound_winer = pygame.mixer.Sound(file = assetsDir + '270528littlerobotsoundfactoryjingle-win-00.ogg')
 sound_winer.set_volume(0.5)
 
+#display dimensions
 display_width = 800
 display_height = 600
 
+#colors
 black = ( 0, 0, 0 )
 white = ( 255, 255, 255 )
 red = ( 255 , 0, 0 )
@@ -37,24 +49,27 @@ gray = (112,128,144)
 
 gameDisplay = pygame.display.set_mode( (  display_width, display_height ) )
 pygame.display.set_caption('Zombie Pan')
-map_settings = [ "", 0, "assets/map1.jpg", 0]
+#mapas settings NULL, gap map, name, level
+map_settings = [ "", 0,assetsDir + "map1.jpg", 0]
 
 clock = pygame.time.Clock()
-#start engines 
+
+#engine flags
 engineExit = False
 gameExit = False
 menuExit = False
 infoExit = False
 mapExit = False
 adjExit = False
-
+#default audio options
 music_enabled = True
 sound_enabled = True
 
-total = 15 #default total number of zombies to appear
+#default number of zombies
+total = 15
 
 class Sprite:
-    
+    #first try to defina image  as sprite - obsolete but some obj still need it
     def __init__(self, img, x, y, velx, vely, scalef ):
         self.x = x
         self.y = y
@@ -72,7 +87,7 @@ class Sprite:
         
 
 class Sprite2(pygame.sprite.Sprite):
-        
+    #class to define simple image as sprite
     def __init__(self, image_file, x, y, w, h, u, v):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(image_file)      
@@ -85,7 +100,7 @@ class Sprite2(pygame.sprite.Sprite):
         self.file = image_file
 
 class Sprite3(pygame.sprite.Sprite):
-
+#generic class to create a sprite with animation properties, Run&Dead
     def __init__(self, files, x, y, u, v):
         super(Sprite3, self).__init__()
 			        
@@ -120,9 +135,9 @@ class Sprite3(pygame.sprite.Sprite):
             self.image = self.imagesRun[self.index]
             self.rect.w = self.files[1][0]
             self.rect.h = self.files[1][1]
-            
+
         else:#dead animation
-            self.u = 0            
+            self.u = 0
             if self.index >= len(self.imagesDead):
                 self.lived = True
                 self.u = self.uDefault
@@ -170,11 +185,11 @@ def pause_loop():
     global menuExit
     pauseExit = False
         
-    mapsback = Sprite2('assets/maps_board.jpg', 0, 0, display_width, display_height, 0, 0)
+    mapsback = Sprite2(assetsDir + 'maps_board.jpg', 0, 0, display_width, display_height, 0, 0)
     btns = []    
-    btns.append( Sprite2("assets/Button_play.png", display_width * 0.5 - 100, display_height * 0.5 - 100, 80, 80, 0, 0))
-    btns.append( Sprite2("assets/Buttonmenu.png", btns[0].rect.x, btns[0].rect.y + btns[0].rect.h + 10, 80, 80, 0, 0))
-    btns.append( Sprite2("assets/Button_cancel.png",  btns[1].rect.x, btns[1].rect.y + btns[1].rect.h + 10, 80, 80, 0, 0))
+    btns.append( Sprite2(assetsDir + "Button_play.png", display_width * 0.5 - 100, display_height * 0.5 - 100, 80, 80, 0, 0))
+    btns.append( Sprite2(assetsDir + "Buttonmenu.png", btns[0].rect.x, btns[0].rect.y + btns[0].rect.h + 10, 80, 80, 0, 0))
+    btns.append( Sprite2(assetsDir + "Button_cancel.png",  btns[1].rect.x, btns[1].rect.y + btns[1].rect.h + 10, 80, 80, 0, 0))
     
     while not pauseExit:
         for event in pygame.event.get():
@@ -227,13 +242,13 @@ def pause_loop():
 def end():
     global engineExit
     endExit = False
-    pygame.mixer.music.load('assets/Little Swans Game.ogg')
+    pygame.mixer.music.load(assetsDir + 'Little Swans Game.ogg')
     play_music()
-    background =  Sprite2( 'assets/end.jpg', 0, 0, display_width, display_height, 0, 0)
+    background =  Sprite2( assetsDir + 'end.jpg', 0, 0, display_width, display_height, 0, 0)
 
-    filesRun = ['assets/Run1.png', 'assets/Run2.png', 'assets/Run3.png', 'assets/Run4.png', 'assets/Run5.png', 'assets/Run6.png']
+    filesRun = [assetsDir + 'Run1.png', assetsDir + 'Run2.png', assetsDir + 'Run3.png', assetsDir + 'Run4.png', assetsDir + 'Run5.png', assetsDir + 'Run6.png']
     filesRunSize =  (70,77)
-    filesDead = ['assets/Dead1.png', 'assets/Dead2.png', 'assets/Dead3.png', 'assets/Dead4.png', 'assets/Dead5.png', 'assets/Dead6.png', 'assets/Dead7.png','assets/Dead8.png']
+    filesDead = [assetsDir + 'Dead1.png', assetsDir + 'Dead2.png', assetsDir + 'Dead3.png', assetsDir + 'Dead4.png', assetsDir + 'Dead5.png', assetsDir + 'Dead6.png', assetsDir + 'Dead7.png',assetsDir + 'Dead8.png']
     files = [filesRun,filesRunSize,filesDead,filesDeadSize]
 
     group_enemies=[]
@@ -300,19 +315,19 @@ def engine_loop():
     global menuExit
     global mapExit
     
-    pygame.mixer.music.load('assets/helicopter.ogg')
+    pygame.mixer.music.load(assetsDir + 'helicopter.ogg')
     play_music()
     #print('engine started')
     
     background =  Sprite2( map_settings[2], 0, 0, display_width, display_height, 0, 0)
     map_gap = map_settings[1]
 
-    info_winer = Sprite2('assets/enabled.png', display_width*0.5 - 40, display_height*0.5 - 40, 80, 80, 0, 0)
-    info_loser = Sprite2('assets/disabled.png', display_width*0.5 - 40, display_height*0.5 - 40, 80, 80, 0, 0)
+    info_winer = Sprite2(assetsDir + 'enabled.png', display_width*0.5 - 40, display_height*0.5 - 40, 80, 80, 0, 0)
+    info_loser = Sprite2(assetsDir + 'disabled.png', display_width*0.5 - 40, display_height*0.5 - 40, 80, 80, 0, 0)
     
-    filesRun = ['assets/Run1.png', 'assets/Run2.png', 'assets/Run3.png', 'assets/Run4.png', 'assets/Run5.png', 'assets/Run6.png']
+    filesRun = [assetsDir + 'Run1.png', assetsDir + 'Run2.png', assetsDir + 'Run3.png', assetsDir + 'Run4.png', assetsDir + 'Run5.png', assetsDir + 'Run6.png']
     filesRunSize =  (70,77)
-    filesDead = ['assets/Dead1.png', 'assets/Dead2.png', 'assets/Dead3.png', 'assets/Dead4.png', 'assets/Dead5.png', 'assets/Dead6.png', 'assets/Dead7.png','assets/Dead8.png']
+    filesDead = [assetsDir + 'Dead1.png', assetsDir + 'Dead2.png', assetsDir + 'Dead3.png', assetsDir + 'Dead4.png', assetsDir + 'Dead5.png', assetsDir + 'Dead6.png', assetsDir + 'Dead7.png',assetsDir + 'Dead8.png']
     filesDeadSize = (96,77)
     files = [filesRun,filesRunSize,filesDead,filesDeadSize]
 
@@ -321,12 +336,12 @@ def engine_loop():
     group_enemies.append( Sprite3(files, 0, display_height - map_gap - 77 + 0,  2.0, 0))
     group_enemies.append( Sprite3(files, 0, display_height - map_gap - 77 + 10, 2.0, 0))
     
-    filesHel = ['assets/helicopter1.png', 'assets/helicopter2.png', 'assets/helicopter3.png', 'assets/helicopter4.png']    
+    filesHel = [assetsDir + 'helicopter1.png', assetsDir + 'helicopter2.png', assetsDir + 'helicopter3.png', assetsDir + 'helicopter4.png']    
     filesHelSize = (210,62)
     files = [filesHel, filesHelSize, filesHel, filesHelSize] #meandwhile no destructed helicpter is available
     hel = Sprite3(files, 0, 20, 2, 0)
 
-    bullet1 = Sprite2('assets/bullet1.png', hel.rect.x, 0, 12, 18, 0, 0 )
+    bullet1 = Sprite2(assetsDir + 'bullet1.png', hel.rect.x, 0, 12, 18, 0, 0 )
     
     #total = 10
     experience = 0
@@ -460,7 +475,7 @@ def engine_loop():
             time.sleep(4)
         
         pygame.display.update()    
-        clock.tick( 60 )
+        clock.tick( 50 )
         
 #---------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------
@@ -473,28 +488,28 @@ def game_maps():
     global engineExit
     global total
     
-    #pygame.mixer.music.load('assets/WelcomeScreen.mp3')
+    #pygame.mixer.music.load(assetsDir + 'WelcomeScreen.mp3')
     play_music()
     
     print('engine maps')
     
-    mapsback = Sprite2('assets/maps_board.jpg', 0, 0, display_width, display_height, 0, 0)
+    mapsback = Sprite2(assetsDir + 'maps_board.jpg', 0, 0, display_width, display_height, 0, 0)
     maps = []
-    maps.append( Sprite2('assets/icon_map1.png', 150, 50, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map2.png', 300, 50, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map3.png', 450, 50, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map4.png', 600, 50, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map5.png', 150, 150, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map6.png', 300, 150, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map7.png', 450, 150, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map8.png', 600, 150, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map9.png', 150, 250, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map10.png', 300, 250, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map11.png', 450, 250, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map12.png', 600, 250, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map13.png', 150, 350, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/icon_map14.png', 300, 350, 60, 60, 0, 0))
-    maps.append( Sprite2('assets/Button_exit.png', 150, 500, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map1.png', 150, 50, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map2.png', 300, 50, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map3.png', 450, 50, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map4.png', 600, 50, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map5.png', 150, 150, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map6.png', 300, 150, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map7.png', 450, 150, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map8.png', 600, 150, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map9.png', 150, 250, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map10.png', 300, 250, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map11.png', 450, 250, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map12.png', 600, 250, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map13.png', 150, 350, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'icon_map14.png', 300, 350, 60, 60, 0, 0))
+    maps.append( Sprite2(assetsDir + 'Button_exit.png', 150, 500, 60, 60, 0, 0))
     
     while not mapExit:
         for event in pygame.event.get():
@@ -543,7 +558,7 @@ def game_maps():
                         map_settings = []
                         map_settings.append(m.file)                    
                         map_settings.append(display_height * 0.08)
-                        map_settings.append("assets/" + map_name + ".jpg")
+                        map_settings.append(assetsDir + "" + map_name + ".jpg")
                         
                                         
                         
@@ -588,15 +603,15 @@ def game_menu():
     global mapExit
     global adjExit
     
-    pygame.mixer.music.load('assets/Little Swans Game.ogg')
+    pygame.mixer.music.load(assetsDir + 'Little Swans Game.ogg')
     play_music()
     
-    mapsback = Sprite2('assets/main_back.jpg', 0, 0, display_width, display_height, 0, 0)
+    mapsback = Sprite2(assetsDir + 'main_back.jpg', 0, 0, display_width, display_height, 0, 0)
     btn = []
-    btn.append( Sprite2('assets/play_red.png', 150, 450, 70, 70, 0, 0))
-    btn.append( Sprite2('assets/Buttonmenu.png', 300, 450, 70, 70, 0, 0))
-    btn.append( Sprite2('assets/Button_adj.png', 450, 450, 70, 70, 0, 0))
-    btn.append( Sprite2('assets/Button_cancel.png', 600, 450, 70, 70, 0, 0))
+    btn.append( Sprite2(assetsDir + 'play_red.png', 150, 450, 70, 70, 0, 0))
+    btn.append( Sprite2(assetsDir + 'Buttonmenu.png', 300, 450, 70, 70, 0, 0))
+    btn.append( Sprite2(assetsDir + 'Button_adj.png', 450, 450, 70, 70, 0, 0))
+    btn.append( Sprite2(assetsDir + 'Button_cancel.png', 600, 450, 70, 70, 0, 0))
     
     while not menuExit:
         for event in pygame.event.get():
@@ -663,20 +678,20 @@ def adjustments():
     global music_enabled
     global sound_enabled
     
-    mapsback = Sprite2('assets/maps_board.jpg', 0, 0, display_width, display_height, 0, 0)
+    mapsback = Sprite2(assetsDir + 'maps_board.jpg', 0, 0, display_width, display_height, 0, 0)
     btn = []
  
     if music_enabled:     
-        btn.append( Sprite2('assets/enabled.png', 250, 100, 50, 50, 0, 0))
+        btn.append( Sprite2(assetsDir + 'enabled.png', 250, 100, 50, 50, 0, 0))
     else:
-        btn.append( Sprite2('assets/disabled.png', 250, 100, 50, 50, 0, 0))
+        btn.append( Sprite2(assetsDir + 'disabled.png', 250, 100, 50, 50, 0, 0))
     
     if sound_enabled:
-        btn.append( Sprite2('assets/enabled.png', 250, 200, 50, 50, 0, 0))
+        btn.append( Sprite2(assetsDir + 'enabled.png', 250, 200, 50, 50, 0, 0))
     else:
-        btn.append( Sprite2('assets/disabled.png', 250, 200, 50, 50, 0, 0))
+        btn.append( Sprite2(assetsDir + 'disabled.png', 250, 200, 50, 50, 0, 0))
         
-    btn.append( Sprite2('assets/buy_yes.png', 50, 480, 60, 60, 0, 0))
+    btn.append( Sprite2(assetsDir + 'buy_yes.png', 50, 480, 60, 60, 0, 0))
     
     while not adjExit:
         for event in pygame.event.get():
@@ -716,10 +731,10 @@ def adjustments():
             if pygame.mouse.get_pressed()[0]:
                 if music_enabled: 
                     music_enabled = False
-                    btn.append( Sprite2('assets/disabled.png', 250, 100, 50, 50, 0, 0))                                       
+                    btn.append( Sprite2(assetsDir + 'disabled.png', 250, 100, 50, 50, 0, 0))                                       
                 else: 
                     music_enabled = True
-                    btn.append( Sprite2('assets/enabled.png', 250, 100, 50, 50, 0, 0))
+                    btn.append( Sprite2(assetsDir + 'enabled.png', 250, 100, 50, 50, 0, 0))
                 time.sleep(1)
                 play_music()
                 
@@ -731,11 +746,11 @@ def adjustments():
             if pygame.mouse.get_pressed()[0]:
                 if sound_enabled: 
                     sound_enabled = False
-                    btn.append( Sprite2('assets/disabled.png', 250, 200, 50, 50, 0, 0))
+                    btn.append( Sprite2(assetsDir + 'disabled.png', 250, 200, 50, 50, 0, 0))
                     
                 else: 
                     sound_enabled = True
-                    btn.append( Sprite2('assets/enabled.png', 250, 200, 50, 50, 0, 0))
+                    btn.append( Sprite2(assetsDir + 'enabled.png', 250, 200, 50, 50, 0, 0))
                 time.sleep(1)
                 play_music()
                     
@@ -753,13 +768,13 @@ def info_loop():
     global infoExit 
     
     
-    pygame.mixer.music.load('assets/Little Swans Game.ogg')
+    pygame.mixer.music.load(assetsDir + 'Little Swans Game.ogg')
     
     play_music()
     
-    mapsback = Sprite2('assets/maps_board.jpg', 0, 0, display_width, display_height, 0, 0)
+    mapsback = Sprite2(assetsDir + 'maps_board.jpg', 0, 0, display_width, display_height, 0, 0)
     btn = []
-    btn.append( Sprite2('assets/buy_yes.png', 100, 450, 90, 90, 0, 0))
+    btn.append( Sprite2(assetsDir + 'buy_yes.png', 100, 450, 90, 90, 0, 0))
         
     while not infoExit:
         for event in pygame.event.get():
