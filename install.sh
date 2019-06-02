@@ -7,6 +7,6 @@ sudo apt install python3-pip
 #install pygame for python3
 sudo pip3 install pygame
 #contact nordik14@gmail.com
-#contribute thi project
+#contribute to this project
 
  
