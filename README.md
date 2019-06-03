@@ -61,8 +61,9 @@ install pip 3 for python 3
 install pygame for python3
 -    sudo pip3 install pygame
 
-#Run
-    sh run.sh
+#Run 
+in terminal run
+-   sh run.sh
     
   
 
