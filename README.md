@@ -11,7 +11,7 @@ Source code provided to work in linux and Windows
 -   2 zomby designs
 -   multishoot
 -   efficient coding
--   regular updates
+-   updates
 -   independient development
 
 #Contact
