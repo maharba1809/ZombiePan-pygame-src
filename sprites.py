@@ -26,7 +26,8 @@ class Sprite2(pygame.sprite.Sprite):
     #class to define simple image as sprite
     def __init__(self, image_file, x, y, w, h, u, v):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(image_file)      
+        self.image = pygame.image.load(image_file)
+        print(image_file)
         self.image = pygame.transform.scale(self.image, (w, h))            
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -50,7 +51,7 @@ class Sprite3(pygame.sprite.Sprite):
         self.rect = pygame.Rect(x, y, 10, 10)
         self.u = u
         self.v = v
-        self.lived = True#declares status
+        self.alive = True#declares status
         self.uDefault = u
         self.col = False
         #files[0] images list names
@@ -73,7 +74,7 @@ class Sprite3(pygame.sprite.Sprite):
     #animation def changes frames 
     def update(self):
         self.index += 1
-        if self.lived:#lived animation - Run
+        if self.alive:#lived animation - Run
             if self.index >= len(self.imagesRun):
                 self.index = 0
             self.image = self.imagesRun[self.index]
@@ -83,7 +84,7 @@ class Sprite3(pygame.sprite.Sprite):
         else:#dead animation
             self.u = 0
             if self.index >= len(self.imagesDead):
-                self.lived = True
+                self.alive = True
                 self.u = self.uDefault
                 self.rect.x = 0
             else:
@@ -111,7 +112,7 @@ class AddBullet(Sprite2):
         w = 12
         h = 18
         u = 0
-        v = 9
+        v = 15
         Sprite2.__init__(self,self.image_file,x,y, w, h, u, v)
 
         # newbullet = self.Sprite2(var.assetsDir + 'bullet1.png', xb, yb, 12, 18, hel.u, 9)
@@ -174,7 +175,7 @@ class Asprite(pygame.sprite.Sprite):
 
         self.u = 2
         self.v = 0
-        self.lived = True  # declares status
+        self.alive = True  # declares status
         self.uDefault = 9
         self.col = False
         self.imagesRun = []
@@ -197,7 +198,7 @@ class Asprite(pygame.sprite.Sprite):
                 self.imagesDead.append(pygame.transform.scale(images, self.fileSizeDead))
 
     def animate(self):
-        if self.lived:  # lived animation - Run
+        if self.alive:  # lived animation - Run
             if self.files_run:
                 if self.index < len(self.files_run):
                     self.image = self.imagesRun[self.index]
@@ -264,21 +265,23 @@ class Enemy(Asprite):
         self.files_dead.append(var.assetsDir + 'Dead7.png')
         self.files_dead.append(var.assetsDir + 'Dead8.png')
         self.fileSizeDead = (96, 77)
+        self.rect.w = self.fileSizeRun[0]
+        self.rect.h = self.fileSizeRun[1]
 
-        self.damage = 0
+
+
 
     def move(self):
         # print(self.u)
-        if self.rect.x + self.rect.w >= df.display_width:
-            # self.u = 0
-            self.rect.x = self.rect.x - self.u*4
-            # print(self.rect.x)
-            # if device.audio.sound_enabled: self.sound.play()
-            self.damage = self.damage +1
-
         self.rect.x += self.u
         self.rect.y += self.v
 
+    def destroy(self):
+        if self.rect.x + self.rect.w >= df.display_width:
+            self.rect.x = self.rect.x - self.u*4
+
+            return True
+        return False
 
 class ChildEnemy(Enemy):
     def __init__(self):
@@ -312,25 +315,118 @@ class ChildEnemy(Enemy):
 class Horde():
     def __init__(self):
         self.enemies = []
-        self.limit = var.total
+        self.limit = 0
+        self.count = 0
+        self.map_gap = 0
 
-    def new_horde(self):
-        for i in range(0, self.limit):
-            if i % 2:
+    def new_enemy(self):
+
+        if self.count < self.limit:
+            if int(random.random()*10) % 2:
                 enemy = Enemy()
             else:
-                enemy = ChildEnemy()
-             # print(enemy.files_run)
+                enemy=ChildEnemy()
+            # enemy2 = ChildEnemy()
+            self.count+=1
             enemy.load_images()
-            enemy.rect.y =  df.display_height - var.map_gap - 77*random.random()
+            # print(enemy.rect.h)
+            enemy.rect.y =  df.display_height - self.map_gap - enemy.rect.h - 20*random.random()
+            # enemy.rect.y =  df.display_height - self.map_gap - 77*random.random()
 
             enemy.u = 2 +random.random()*2
             if len(self.enemies)>0:
                 while abs (enemy.u -self.enemies[-1].u) <0.5:
                     enemy.u = 2 + random.random()*2
-                    # print(enemy.u)
+                        # print(enemy.u)
 
             self.enemies.append(enemy)
+
+class Imap(Sprite2):
+    def __init__(self,filename, x, y, level, gap, blocked, total_enemies):
+        w = 60
+        h = 60
+        Sprite2.__init__(self, filename, x, y, w, h, 0, 0)
+        self.level = level
+        self.blocked = blocked
+        self.gap = gap
+        self.total = total_enemies
+
+        self.map_name = ""
+        self.filename  = ""
+        self.bfilename = var.assetsDir + "icons8-lock-100.png"
+        self.lockpad = Sprite2(self.bfilename, x, y, int(w*0.5), int(h*0.5), 0, 0)
+
+    def get_map_name(self):
+        self.map_name = self.file.split("_", 1)[1]
+        self.map_name = self.map_name.split(".", 1)[0]
+        self.filename = var.assetsDir + "" + self.map_name + ".jpg"
+
+    def highlight_icon(self):
+        s = pygame.Surface((self.rect.w, self.rect.h))
+        s.set_alpha(40)
+        s.fill((255, 255, 255))
+        var.gameDisplay.blit(s, (self.rect.x, self.rect.y))
+
+    def draw_sprite(self):
+        var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
+        if self.blocked:
+            var.gameDisplay.blit(self.lockpad.image, (self.rect.x, self.rect.y))
+
+class Button(Sprite2):
+    def __init__(self,filename,x,y):
+        w = 70
+        h = 70
+        Sprite2.__init__(self, filename, x, y, w, h, 0, 0)
+        self.hover_text = "'Back /Zurück/Atras'"
+        self.click_text = 'Loading/ Laden/ Caragando'
+        self.font =  "monospace"
+        self.font_size = 30
+        self.txt_w = df.display_width
+        self.txt_h = 30
+        self.txt_x = 100
+        self.txt_y = df.display_height - self.txt_h*2
+        self.txt_color= df.black
+        self.hover_color = df.white
+        self.click_color = df.orange
+        self.shadow_w = df.display_width
+        self.shadow_h = df.display_width
+        self.shadow_x = 0
+        self.shadow_y = self.txt_y
+        self.shadow_color = df.white
+
+    def draw_sprite2(self):
+        var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
+
+    def highlight(self):
+        s = pygame.Surface((self.rect.w, self.rect.h))
+        s.set_alpha(40)
+        s.fill(self.hover_color)
+        var.gameDisplay.blit(s, (self.rect.x, self.rect.y))
+
+    def new_shadow(self):
+        s = pygame.Surface((self.txt_w, self.txt_h))
+        s.set_alpha(40)
+        s.fill(self.shadow_color)
+        var.gameDisplay.blit(s, (self.shadow_x, self.shadow_y))
+
+    def new_msg(self,text,color):
+        myfont = pygame.font.SysFont(self.font, self.font_size)
+        label = myfont.render(text, 1, color)
+        var.gameDisplay.blit(label, (self.txt_x, self.txt_y))
+
+    def on_hover_click(self,mouse):
+        if self.rect.collidepoint(mouse.get_pos()) == 1:
+            self.highlight()
+            self.new_shadow()
+            self.new_msg(self.hover_text, self.hover_color)
+            if mouse.get_pressed()[0]:
+                print('Exit from Maps')
+                self.on_click()
+                return  True
+        return False
+
+    def on_click(self):
+        self.new_msg(self.click_text, self.click_color)
 
 
 

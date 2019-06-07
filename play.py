@@ -11,20 +11,24 @@ import final
 import random
 import pause
 import imp
+import datetime
+
 
 
 
 class AddScreen(gen.Xscreen):
-    def __init__(self):
+    def __init__(self, map):
         gen.Xscreen.__init__(self)
+        self.map = map
 
     def run(self):
         imp.reload(sp)
+        imp.reload(final)
 
+        print('\n')
         if device.audio.sound_enabled: device.audio.sound_hel.play()
 
-        background = sp.Sprite2(var.map_settings[2], 0, 0, df.display_width, df.display_height, 0, 0)
-        var.map_gap = var.map_settings[1]
+        background = sp.Sprite2(self.map.filename, 0, 0, df.display_width, df.display_height, 0, 0)
 
         info_winer = sp.Sprite2(var.assetsDir + 'enabled.png', df.display_width * 0.5 - 40, df.display_height * 0.5 - 40, 80, 80, 0,
                                 0)
@@ -32,18 +36,19 @@ class AddScreen(gen.Xscreen):
                                 0)
 
         horde = sp.Horde()
-        horde.new_horde()
+        horde.map_gap = self.map.gap
+        horde.limit = self.map.total
+        device.stats.total = self.map.total
+        horde.new_enemy()
         hel = sp.Asprite()
         hel.load_images()
         weapon = sp.Weapon(hel.rect.x, hel.rect.y)
 
-        experience = 0
-        respawn = 0
-        killed = 0
-        shelter = 100
         bullets = []
         uinert = 0.5 * hel.u
-        damage = 0
+
+        device.stats.new_level()
+
         while not self.stopEngine:
             for event in pygame.event.get():
 
@@ -84,60 +89,66 @@ class AddScreen(gen.Xscreen):
             weapon.moveBullets()
             # self.draw_sprite2(hel)
             hel.animate()  # callls animation defs
-
+            horde.new_enemy()
             for enemy in horde.enemies:
                 enemy.animate()
-                if enemy.lived:
-                    damage += enemy.damage/50000
+                if enemy.destroy() and enemy.alive:
+                    device.stats.add_damage()
+                    if device.stats.life <= 0:
+                        break
 
                 # Collision detection
                 if len(weapon.magazine)>0:
                     for bullet in weapon.magazine:
                         # print(bullet)
                         if enemy.rect.colliderect(bullet.rect):
-                            if enemy.lived:
+                            if enemy.alive:
                                 if device.audio.sound_enabled: device.audio.sound_col.play()
-                                killed += 1
-                                experience += 1
-                                enemy.lived = False  # changes status
-                                # enemy.col = True  # collision flag
-                                # enemy.index = 0  # restarts frame
-                                print('killed:', killed)
+                                device.stats.add_kill()
+                                enemy.alive = False  # changes statsus
                                 weapon.magazine.remove(bullet)
-                                # horde.enemies.remove(enemy)
-                            #del bullet1
-
+                                df.dead_time = datetime.datetime.now()
 
             # control
             # killed = 10000
             # print(damage,'damage')
-            if killed >= var.total or damage>1:
+            if  device.stats.end_level():
                 self.stopEngine = True
                 self.draw_selected((0, df.display_height * 0.5 + 50), (df.display_width, 30), 100, df.white)
-                self.message_display('Target:' + str(int(shelter)) + "%", "monospace", 30,
+                if device.stats.damage !=0:
+                    display_text = 'Damage:' + str(int(device.stats.damage*100))+ '% :('
+
+                else:
+                    display_text = 'Perfect!:)'
+                self.message_display(display_text, "monospace", 30,
                                 (df.display_width * 0.5 - 100, df.display_height * 0.5 + 50), df.violet)
 
-                if damage < 1:
+                if device.stats.life > 0:
                     self.draw_sprite2(info_winer)
                     if device.audio.sound_enabled: device.audio.sound_winer.play()
 
                     # print(var.map_settings[2])
                     pygame.display.update()
                     time.sleep(4)
-                    if re.search("map14", var.map_settings[2], flags=0):
+                    # if re.search("map14", var.map_settings[2], flags=0):
+                    if device.stats.level == 14:
                         finalScreen = final.AddScreen()
                         finalScreen.run()
+
+                    device.stats.winner = True
+
                 else:
                     self.draw_sprite2(info_loser)
                     if device.audio.sound_enabled: device.audio.sound_loser.play()
                     pygame.display.update()
                     time.sleep(4)
-
+                    device.stats.winner = False
 
             self.draw_selected((0, 0), (df.display_width, 20), 100, df.white)
-            self.message_display('Enemies:' + str(var.total - killed), "monospace", 20, (0, 0), df.orange)
-            self.message_display('Exp:' + str(experience), "monospace", 20, (200, 0), df.violet)
-            self.message_display('Shelter:' + str(int(shelter)) + "%", "monospace", 20, (400, 0), df.red)
+            self.message_display('Enemies:' + str(device.stats.total - device.stats.killed), "monospace", 20, (0, 0), df.orange)
+            self.message_display('Exp:' + str(int(device.stats.experience)), "monospace", 20, (200, 0), df.violet)
+            self.message_display('Life:' + str(int(device.stats.life)) + "%", "monospace", 20, (400, 0), df.orange)
+            self.message_display('Map:' + str(device.stats.level), "monospace", 20, (550, 0), df.orange)
 
             pygame.display.update()
-            var.clock.tick(50)
+            var.clock.tick(var.fps)

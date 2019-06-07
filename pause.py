@@ -74,3 +74,4 @@ class AddScreen(gen.Xscreen):
             self.message_display("Pause", "monospace", 30, (btns[0].rect.x, btns[0].rect.y - btns[0].rect.h - 5), df.gold)
 
             pygame.display.update()
+            var.clock.tick(var.fps)

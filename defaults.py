@@ -16,3 +16,5 @@ display_width = 800
 display_height = 600
 
 total = 15
+dead_time = 0
+delay = 2

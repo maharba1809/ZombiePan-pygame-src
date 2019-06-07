@@ -1,6 +1,7 @@
 import pygame
 import var
-
+import datetime
+import defaults as df
 print('Loading Sound and Video')
 
 class AddWin():
@@ -53,4 +54,53 @@ class AddSound(AddWin):
             pygame.mixer.music.pause()
             pygame.mixer.music.stop()
 
+
+class Ranking():
+    def __init__(self):
+
+        self.experience = 0
+        self.respawn = 0
+        self.killed = 0
+        self.shelter = 100
+        self.damage = 0
+        self.level = 0
+        self.life = 100
+        self.damage_rate = 0.008
+        self.damage = 0
+        print('instance of Ranking')
+        self.map_name = ''
+        self.map = ''
+        self.total = 0
+        self.winner = False
+        self.maps = []
+    def add_damage(self):
+
+        self.damage += self.damage_rate
+        self.life -= self.damage_rate*100
+        print('Damage', round(self.damage*100, 1), int(self.life))
+
+    def add_kill(self):
+        self.killed += 1
+        self.experience += 1
+
+    def new_level(self):
+        self.killed = 0
+        self.damage = 0
+        if self.life <= 0:
+            self.life = 100
+
+    def end_level(self):
+        if self.life <= 0:
+            print('End Level', round(self.damage,1), int(self.life))
+            return True
+
+        if self.killed == self.total:
+            if datetime.datetime.now() - df.dead_time > datetime.timedelta(seconds=df.delay):
+                return True
+            return False
+
+
+        return False
+
+stats = Ranking()
 audio = AddSound()

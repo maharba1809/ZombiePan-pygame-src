@@ -90,7 +90,5 @@ class AddScreen(gen.Xscreen):
                             time.sleep(0.5)
                             adjScreen.run()
 
-
-
             pygame.display.update()
-            var.clock.tick(20)
+            var.clock.tick(var.fps)
