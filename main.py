@@ -12,3 +12,5 @@ menuScreen = menu.AddScreen()
 #             quit()
 menuScreen.run()
 
+pygame.display.quit()
+pygame.quit()
