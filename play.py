@@ -38,18 +38,21 @@ class AddScreen(gen.Xscreen):
         horde = sp.Horde()
         horde.map_gap = self.map.gap
         horde.limit = self.map.total
+        horde.update()
         device.stats.total = self.map.total
-        horde.new_enemy()
+        # horde.new_enemy()
         hel = sp.Asprite()
         hel.load_images()
         weapon = sp.Weapon(hel.rect.x, hel.rect.y)
-
+        weapon.bullet_available = device.stats.bullet_available
         bullets = []
         uinert = 0.5 * hel.u
 
         device.stats.new_level()
+        total_time = 0
 
         while not self.stopEngine:
+            time_start = pygame.time.get_ticks()
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
@@ -69,11 +72,12 @@ class AddScreen(gen.Xscreen):
 
 
                     if event.key == pygame.K_ESCAPE:
-
                         pauseScreen = pause.AddScreen()
                         time.sleep(0.1)
+                        time_pause = pygame.time.get_ticks()
                         pauseScreen.run()
-
+                        dt_pause = pygame.time.get_ticks()  - time_pause
+                        time_start += dt_pause
                         if pauseScreen.stopPlay:
                             self.stopEngine = True
                     if event.key == pygame.K_LEFT and event.key == pygame.K_RIGHT:
@@ -89,7 +93,11 @@ class AddScreen(gen.Xscreen):
             weapon.moveBullets()
             # self.draw_sprite2(hel)
             hel.animate()  # callls animation defs
-            horde.new_enemy()
+
+            # if hel.rect.x>0.5*df.display_width:
+            horde.enemy_control(total_time)
+
+
             for enemy in horde.enemies:
                 enemy.animate()
                 if enemy.destroy() and enemy.alive:
@@ -129,13 +137,14 @@ class AddScreen(gen.Xscreen):
 
                     # print(var.map_settings[2])
                     pygame.display.update()
-                    time.sleep(4)
+                    time.sleep(2)
                     # if re.search("map14", var.map_settings[2], flags=0):
                     if device.stats.level == 14:
                         finalScreen = final.AddScreen()
                         finalScreen.run()
 
                     device.stats.winner = True
+                    device.stats.bullet_available = weapon.bullet_available + 10
 
                 else:
                     self.draw_sprite2(info_loser)
@@ -143,12 +152,25 @@ class AddScreen(gen.Xscreen):
                     pygame.display.update()
                     time.sleep(4)
                     device.stats.winner = False
+                #check point
 
-            self.draw_selected((0, 0), (df.display_width, 20), 100, df.white)
+
+            var.clock.tick(var.fps)
+            dt = pygame.time.get_ticks() - time_start
+            # print(total_time,dt,time_start, pygame.time.get_ticks())
+
+            total_time += dt
+
+
+            self.draw_selected((0, 0), (df.display_width, 20), 50, df.white)
             self.message_display('Enemies:' + str(device.stats.total - device.stats.killed), "monospace", 20, (0, 0), df.orange)
-            self.message_display('Exp:' + str(int(device.stats.experience)), "monospace", 20, (200, 0), df.violet)
-            self.message_display('Life:' + str(int(device.stats.life)) + "%", "monospace", 20, (400, 0), df.orange)
-            self.message_display('Map:' + str(device.stats.level), "monospace", 20, (550, 0), df.orange)
+            self.message_display('Exp:' + str(int(device.stats.experience)), "monospace", 20, (150, 0), df.violet)
+            self.message_display('Life:' + str(int(device.stats.life)) + "%", "monospace", 20, (250, 0), df.orange)
+            self.message_display('Map:' + str(device.stats.level), "monospace", 20, (400, 0), df.orange)
+            self.message_display('Time:' + str(round(total_time,1)), "monospace", 20, (500, 0), df.red)
+            self.message_display('Bullets:' + str(weapon.bullet_available), "monospace", 20, (650,  0), df.violet)
 
             pygame.display.update()
-            var.clock.tick(var.fps)
+
+
+

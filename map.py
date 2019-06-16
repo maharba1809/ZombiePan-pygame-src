@@ -59,12 +59,18 @@ class AddScreen(gen.Xscreen):
             maps.append(sp.Imap(self.map12_file, 600, 250, 12, 20, True, 43))
             maps.append(sp.Imap(self.map13_file, 150, 350, 13, 20, True, 45))
             maps.append(sp.Imap(self.map14_file, 300, 350, 14, 20, True, 50))
+            for m in maps:
+                m.hover_text = m.file
+                # m.rect.w = 50
+                # m.rect.h = 50
+
         else:
             maps = device.stats.maps
         button_back = sp.Button(self.exit_file, 400, 450)
 
-
+        total_time = 0
         while not self.stopEngine:
+            time_start = pygame.time.get_ticks()
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
@@ -78,50 +84,36 @@ class AddScreen(gen.Xscreen):
 
             var.gameDisplay.fill(df.white)
             self.draw_sprite2(mapsback)
-            button_back.draw_sprite2()
-            self.stopEngine = button_back.on_hover_click(pygame.mouse)
+
+            if button_back.onClick(pygame.mouse):
+                self.stopEngine = True
 
             for m in maps:
-                m.draw_sprite()
-                # self.draw_sprite2(m)
-                if (m.rect.collidepoint(pygame.mouse.get_pos()) == 1):
-                    self.message_display('Select a Map/Auswählen/Selecciona/', "monospace", 30, (100, 0), df.orange)
-                    s = pygame.Surface((df.display_width, 20))
-                    s.set_alpha(100)
-                    s.fill(df.white)
-                    var.gameDisplay.blit(s, (0, 570))
-                    self.message_display(m.file, "monospace", 20, (150, 570), df.red)
-                    m.highlight_icon()
+                if m.onClick(pygame.mouse):
 
-                    if pygame.mouse.get_pressed()[0] :
+                    device.stats.level = m.level
+                    m.get_map_name()
+                    device.stats.map_name = m.filename
 
-                        device.stats.level = m.level
-                        m.get_map_name()
-                        device.stats.map_name = m.filename
+                    if not m.blocked:
+                        imp.reload(play)
+                        playScreen = play.AddScreen(m)
+                        time.sleep(0.5)
+                        playScreen.run()
+                        if device.stats.winner:
+                            index = device.stats.level
+                            if index > 0:
+                                if index < len(maps):
+                                    print('unblocking the next map')
+                                    maps[index].blocked =False
+                                    device.stats.maps = maps
+                    else:
+                        m.hover_text = "Map is blocked!"
+                        print('map Blocked:',m.filename)
 
-
-                        self.message_display(m.map_name, "monospace", 20, (150, 570), df.blue)
-                        self.message_display("Loading/Laden/Cargando " + m.map_name, "monospace", 20, (100, 420),
-                                        df.violet)
-                        pygame.display.update()
-
-                        # var.map_settings = map_settings
-                        if not m.blocked:
-                            imp.reload(play)
-                            playScreen = play.AddScreen(m)
-                            time.sleep(0.5)
-                            # playScreen.stopEngine=False
-                            playScreen.run()
-                            if device.stats.winner:
-                                index = device.stats.level
-                                if index > 0:
-                                    if index < len(maps):
-                                        print('unblocking the next map')
-                                        maps[index].blocked =False
-                                        device.stats.maps = maps
-                        else:
-                            print('map Blocked:',m.filename)
+                m.draw_block()
             pygame.display.update()
 
             var.clock.tick(var.fps)
 
+        print('Leaving Map screen')

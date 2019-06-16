@@ -21,20 +21,31 @@ class AddScreen(gen.Xscreen):
          self.adj_file = var.assetsDir + 'Button_adj.png'
          self.cancel_file = var.assetsDir + 'Button_cancel.png'
          self.play_txt = "Play/Spielen/Jugar"
-         self.menu_txt = "Info/Auskunft/Info"
+         self.menu_txt = "Info/Angabe/Info"
          self.cancel_text = "Exit/Ausgang/Salir"
          self.adj_txt = "Options/Wahl/Opciones"
          print('menu screen created')
 
     def run(self):
-
-
         mapsback = sp.Sprite2(self.backfile, 0, 0,df.display_width , df.display_height, 0, 0)
         btn = []
-        btn.append( sp.Sprite2(self.play_file, 150, 450, 70, 70, 0, 0))
-        btn.append( sp.Sprite2(self.menu_file, 300, 450, 70, 70, 0, 0))
-        btn.append( sp.Sprite2(self.adj_file, 450, 450, 70, 70, 0, 0))
-        btn.append( sp.Sprite2(self.cancel_file, 600, 450, 70, 70, 0, 0))
+
+        genBtn = sp.Button(self.play_file, 150, 450)
+        genBtn.hover_text = self.play_txt
+        btn.append( genBtn)
+
+
+        genBtn = sp.Button(self.menu_file, 300, 450 )
+        genBtn.hover_text = self.menu_txt
+        btn.append(genBtn)
+
+        genBtn = sp.Button(self.adj_file, 450, 450)
+        genBtn.hover_text = self.adj_txt
+        btn.append(genBtn)
+
+        genBtn = sp.Button(self.cancel_file, 600, 450)
+        genBtn.hover_text = self.cancel_text
+        btn.append(genBtn)
 
         while not self.stopEngine:
             for event in pygame.event.get():
@@ -48,47 +59,27 @@ class AddScreen(gen.Xscreen):
                         self.stopEngine = True
 
             var.gameDisplay.fill( df.white )
-            # var.gameDisplay.blit(mapsback.surface, (mapsback.x, mapsback.y))
             self.draw_sprite2(mapsback)
 
             for m in btn:
-                self.draw_sprite2(m)
-
-                if (m.rect.collidepoint(pygame.mouse.get_pos()) == 1):
-                    self.draw_selected( (0, 550), (df.display_width,40), 100, df.white )
-
+                if m.onClick(pygame.mouse):
                     if re.search("play", m.file, flags=0):
-                        self.message_display( self.play_txt ,"monospace", 40, (150, 550), (255,69,0))
+                        mapsScreen = map.AddScreen()
+                        mapsScreen.run()
+
                     if re.search("menu", m.file, flags=0):
-                        self.message_display( self.menu_txt ,"monospace", 40, (150, 550), (47,79,79))
+                        imp.reload(adjustments)
+                        infoScreen = info.AddScreen()
+                        infoScreen.run()
+
                     if re.search("cancel", m.file, flags=0):
-                        self.message_display( self.cancel_text ,"monospace", 40, (150, 550), (138,43,226))
+                        self.stopEngine = True
+                        break
+
                     if re.search("adj", m.file, flags=0):
-                        self.message_display( self.adj_txt ,"monospace", 40, (150, 550), (255,0,0))
-
-                    if pygame.mouse.get_pressed()[0]:
-
-                        if re.search("play", m.file, flags=0):
-                            mapsScreen = map.AddScreen()
-                            # time.sleep(0.5)
-                            mapsScreen.run()
-
-
-                        if re.search("menu", m.file, flags=0):
-                            imp.reload(adjustments)
-                            infoScreen = info.AddScreen()
-                            # time.sleep(0.5)
-                            infoScreen.run()
-
-
-                        if re.search("cancel", m.file, flags=0):
-                            pygame.quit()
-                            quit()
-
-                        if re.search("adj", m.file, flags=0):
-                            adjScreen = adjustments.AddScreen()
-                            time.sleep(0.5)
-                            adjScreen.run()
+                        adjScreen = adjustments.AddScreen()
+                        time.sleep(0.5)
+                        adjScreen.run()
 
             pygame.display.update()
             var.clock.tick(var.fps)

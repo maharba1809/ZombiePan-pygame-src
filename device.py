@@ -73,6 +73,9 @@ class Ranking():
         self.total = 0
         self.winner = False
         self.maps = []
+        self.default_bullets_avaiable = 100
+        self.bullet_available = self.default_bullets_avaiable
+
     def add_damage(self):
 
         self.damage += self.damage_rate
