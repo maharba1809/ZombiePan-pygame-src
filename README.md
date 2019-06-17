@@ -1,4 +1,6 @@
-https://youtu.be/tGY9dSqrO8Q
+![alt text]()
+[![Audi R8](https://linuxparaorcos.files.wordpress.com/2019/06/zombie-pan-1.1.5_003.png?w=748)](https://youtu.be/tGY9dSqrO8Q
+)
 
 #Version 1.1.5
 Free video game in python & pygame. Shoot the zombies from an helicopter and you keep your home safe. 
@@ -67,5 +69,4 @@ install pygame for python3
 in terminal run
 -   sh run.sh
     
-![alt text](https://linuxparaorcos.files.wordpress.com/2019/06/zombie-pan-1.1.5_003.png?w=748)
 
