@@ -67,5 +67,5 @@ install pygame for python3
 in terminal run
 -   sh run.sh
     
-https://raw.githubusercontent.com/maharba1809/ZombiePan-pygame-src/master/Zombie Pan 1.1.5_003.png
+![alt text](https://linuxparaorcos.files.wordpress.com/2019/06/zombie-pan-1.1.5_003.png?w=748)
 
