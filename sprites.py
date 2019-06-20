@@ -98,14 +98,16 @@ class Sprite3(pygame.sprite.Sprite):
             if self.u > 0:
                 self.rect.x -= self.u
                 self.u = -self.u
-                if device.audio.sound_enabled: device.audio.sound_hel.play()
+                if device.audio.sound_enabled:
+                    device.audio.sound_hel.play()
 
 
         if self.rect.x < 0:
             if self.u < 0:
                 self.rect.x -= self.u
                 self.u = -self.u
-                if device.audio.sound_enabled: device.audio.sound_hel.play()
+                if device.audio.sound_enabled:
+                    device.audio.sound_hel.play()
 
 class AddBullet(Sprite2):
     def __init__(self,x,y):
@@ -136,7 +138,8 @@ class Weapon():
                 self.magazine.append(new_bullet)
                 # self.shoot_count += 1
                 self.bullet_available -=1
-
+                if device.audio.sound_enabled:
+                    device.audio.sound_bullet.play()
             else:
                 print('Weapon overload')
         else:
@@ -214,8 +217,8 @@ class Asprite(pygame.sprite.Sprite):
                     self.index += 1
                 else:
                     self.index = 0
-                if self.rect.w !=  self.fileSizeRun[0]:self.rect.w = self.fileSizeRun[0]
-                if self.rect.h !=  self.fileSizeRun[1]:self.rect.h = self.fileSizeRun[1]
+                if self.rect.w != self.fileSizeRun[0]:self.rect.w = self.fileSizeRun[0]
+                if self.rect.h != self.fileSizeRun[1]:self.rect.h = self.fileSizeRun[1]
 
         else:
             if self.u!=0:
@@ -253,6 +256,50 @@ class Asprite(pygame.sprite.Sprite):
     def draw(self):
         var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
 
+class Home (Asprite):
+    def __init__(self):
+        Asprite.__init__(self)
+        self.files_run = []
+        self.files_run.append(var.assetsDir + 'casa1.png')
+        self.fileSizeRun = (300, 250)
+        self.files_dead = []
+        self.files_dead.append(var.assetsDir + 'casa1.png')
+        self.files_dead.append(var.assetsDir + 'casa2.png')
+        self.files_dead.append(var.assetsDir + 'casa3.png')
+        self.files_dead.append(var.assetsDir + 'casa4.png')
+        self.files_dead.append(var.assetsDir + 'casa5.png')
+        self.files_dead.append(var.assetsDir + 'casa6.png')
+        self.files_dead.append(var.assetsDir + 'casa7.png')
+        self.files_dead.append(var.assetsDir + 'casa8.png')
+        self.files_dead.append(var.assetsDir + 'casa9.png')
+        self.files_dead.append(var.assetsDir + 'casa10.png')
+        self.files_dead.append(var.assetsDir + 'casa11.png')
+        self.files_dead.append(var.assetsDir + 'casa12.png')
+        self.fileSizeDead = (300, 250)
+        self.rect.w = self.fileSizeRun[0]
+        self.rect.h = self.fileSizeRun[1]
+        self.rect.x = df.display_width - self.rect.w*0.25
+        self.rect.y = df.display_height - self.rect.h - 20
+        self.u = 0
+        self.y = 0
+
+    def animate(self):
+        if device.stats.life >90: self.index =0
+        elif device.stats.life >80: self.index =1
+        elif device.stats.life >70: self.index =2
+        elif device.stats.life >60: self.index =3
+        elif device.stats.life >50: self.index =4
+        elif device.stats.life >40: self.index =5
+        elif device.stats.life >30: self.index =6
+        elif device.stats.life >20: self.index =7
+        elif device.stats.life >15: self.index =8
+        elif device.stats.life >10: self.index =9
+        elif device.stats.life >5: self.index =10
+        else: self.index = 11
+        self.image = self.imagesDead[self.index]
+        self.draw()
+
+
 class Enemy(Asprite):
     def __init__(self):
         Asprite.__init__(self)
@@ -277,20 +324,27 @@ class Enemy(Asprite):
         self.rect.w = self.fileSizeRun[0]
         self.rect.h = self.fileSizeRun[1]
 
+        self.hit = False
+        self.attack_delay = 50 #fps
+        self.attack_count = 0
+        self.damage_rate = 2
 
+    def attack(self):
+        if self.alive:
+            self.u *= 0.5
+            self.attack_count += 1
+            if self.attack_count > self.attack_delay:
+                self.hit = True         #trigger hit
+                self.attack_count = 0   #return new attack
 
+                if self.rect.x + self.rect.w >= df.display_width:
+                    self. u = 0
+            else:
+                self.hit = False
+        else:
+            self.hit = False
 
-    def move(self):
-        # print(self.u)
-        self.rect.x += self.u
-        self.rect.y += self.v
-
-    def destroy(self):
-        if self.rect.x + self.rect.w >= df.display_width:
-            self.rect.x = self.rect.x - self.u*4
-
-            return True
-        return False
+        return self.hit
 
 class ChildEnemy(Enemy):
     def __init__(self):
@@ -319,7 +373,7 @@ class ChildEnemy(Enemy):
         self.files_dead.append(var.assetsDir + 'zd9.png')
         self.files_dead.append(var.assetsDir + 'zd10.png')
         self.fileSizeDead = (70, 77)
-
+        self.damage_rate = 1
 
 class Horde():
 
@@ -332,7 +386,6 @@ class Horde():
         self.umax = 2
 
     def new_enemy(self):
-
         if self.count < self.limit:
             if int(random.random()*100) % 2:
                 enemy = Enemy()
@@ -347,11 +400,8 @@ class Horde():
             enemy.rect.y =  df.display_height - self.map_gap - enemy.rect.h - 20*random.random()
             # enemy.rect.y =  df.display_height - self.map_gap - 77*random.random()
 
-            if len(self.enemies)>0:
-                for e in self.enemies:
-                    if e.u>self.umax: self.umax = e.u
-                # print(self.umax)
-            enemy.u = self.umax + random.random()
+            enemy.u = 3*(1+random.random())
+            print(enemy.u)
 
             self.enemies.append(enemy)
 
@@ -361,6 +411,7 @@ class Horde():
             if t0 >= self.time_to_born[0]:
                 self.new_enemy()
                 del self.time_to_born[0]
+
 
 
     def update(self):
@@ -446,6 +497,93 @@ class Button(Sprite2):
 
         self.draw_sprite2()
         if self.animating  or not self.clicked:
+            return False
+
+
+    def update(self):
+        for i in range(1,self.limit+1):
+            self.time_to_born.append(i*1000)
+        # print('ttb:',self.time_to_born)
+
+
+class Button(Sprite2):
+    def __init__(self,filename,x,y):
+        w = 70
+        h = 70
+        Sprite2.__init__(self, filename, x, y, w, h, 0, 0)
+        self.hover_text = 'Back /Zurück/Atras'
+        self.click_text = 'Loading/ Laden/ Caragando'
+        self.font =  "monospace"
+        self.font_size = 30
+        self.txt_w = df.display_width
+        self.txt_h = 30
+        self.txt_x = 100
+        self.txt_y = df.display_height - self.txt_h*2
+        self.txt_color= df.gray
+        self.hover_color = df.white
+        self.click_color = df.red
+        self.shadow_w = df.display_width
+        self.shadow_h = df.display_width
+        self.shadow_x = 0
+        self.shadow_y = self.txt_y
+        self.shadow_color = df.white
+        self.index = 0
+        self.highlighted = False
+        self.clicked = False
+        self.max_frame = 10
+        self.animating = False
+        self.txt_x_d = self.txt_x
+        self.txt_y_d = self.txt_y
+        self.shadow_x_d = self.shadow_x
+        self.shadow_y_d = self.shadow_y
+
+    def draw_sprite2(self):
+        var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
+
+    def highlight(self,color):
+        s = pygame.Surface((self.rect.w, self.rect.h))
+        s.set_alpha(50)
+        s.fill(color)
+        pygame.draw.rect(var.gameDisplay, color, [self.rect.x, self.rect.y, self.rect.w, 1])
+        pygame.draw.rect(var.gameDisplay, color, [self.rect.x, self.rect.y, 1, self.rect.h])
+        pygame.draw.rect(var.gameDisplay, color, [self.rect.x, self.rect.y + self.rect.h, self.rect.w, 1])
+        pygame.draw.rect(var.gameDisplay, color, [self.rect.x+self.rect.w, self.rect.y, 1, self.rect.h])
+        var.gameDisplay.blit(s, (self.rect.x, self.rect.y))
+
+
+    def new_shadow(self,color):
+        s = pygame.Surface((self.txt_w, self.txt_h))
+        s.set_alpha(50)
+        s.fill(color)
+        var.gameDisplay.blit(s, (self.shadow_x, self.shadow_y))
+
+    def new_msg(self,text,color1, color2):
+        self.new_shadow(color1)
+        myfont = pygame.font.SysFont(self.font, self.font_size)
+        label = myfont.render(text, 1, color2)
+        var.gameDisplay.blit(label, (self.txt_x, self.txt_y))
+
+    def onClick(self,mouse):
+
+        if self.rect.collidepoint(mouse.get_pos()) == 1:
+            self.highlight(self.hover_color)
+            self.new_msg(self.hover_text, self.hover_color, self.txt_color)
+            # self.highlighted = True
+
+            if mouse.get_pressed()[0]:
+                self.animating = True
+                self.clicked = True
+                print('button clicked', self.file)
+                self.index = 0
+                time.sleep(0.5)
+        else:
+            self.highlight_color = self.hover_color
+
+        if self.animating:self.animate()
+
+        self.draw_sprite2()
+        if self.animating  or not self.clicked:
+
 
             return False #continue running
         else:

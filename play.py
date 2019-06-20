@@ -51,6 +51,9 @@ class AddScreen(gen.Xscreen):
         device.stats.new_level()
         total_time = 0
 
+        home = sp.Home()
+        home.load_images()
+
         while not self.stopEngine:
             time_start = pygame.time.get_ticks()
             for event in pygame.event.get():
@@ -61,10 +64,10 @@ class AddScreen(gen.Xscreen):
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
-                        hel.u = -5
+                        hel.u = -8
 
                     if event.key == pygame.K_RIGHT:
-                        hel.u = 5
+                        hel.u = 8
 
                     if event.key == pygame.K_SPACE:
                         weapon.get_loc(hel)
@@ -94,24 +97,34 @@ class AddScreen(gen.Xscreen):
             # self.draw_sprite2(hel)
             hel.animate()  # callls animation defs
 
+            home.animate() #call home animation
             # if hel.rect.x>0.5*df.display_width:
             horde.enemy_control(total_time)
-
-
+            # print( home.rect.collidelist(horde.enemies))
+            # print('rengine')
             for enemy in horde.enemies:
                 enemy.animate()
-                if enemy.destroy() and enemy.alive:
-                    device.stats.add_damage()
-                    if device.stats.life <= 0:
-                        break
+                if enemy.rect.colliderect(home.rect):
+                    if enemy.attack(): #delays attack one fps
+                        print('under attacking!')
+                        if device.audio.sound_enabled:
+                            device.audio.sound_attack.play()
+                        device.stats.add_damage(enemy.damage_rate)
+                        if device.stats.life <= 0:
+                            break
 
                 # Collision detection
                 if len(weapon.magazine)>0:
                     for bullet in weapon.magazine:
-                        # print(bullet)
                         if enemy.rect.colliderect(bullet.rect):
+
+                            if device.audio.sound_enabled:
+                                device.audio.sound_col.play()
+
                             if enemy.alive:
-                                if device.audio.sound_enabled: device.audio.sound_col.play()
+                                if device.audio.sound_enabled:
+                                    device.audio.sound_col.play()
+
                                 device.stats.add_kill()
                                 enemy.alive = False  # changes statsus
                                 weapon.magazine.remove(bullet)
@@ -124,7 +137,7 @@ class AddScreen(gen.Xscreen):
                 self.stopEngine = True
                 self.draw_selected((0, df.display_height * 0.5 + 50), (df.display_width, 30), 100, df.white)
                 if device.stats.damage !=0:
-                    display_text = 'Damage:' + str(int(device.stats.damage*100))+ '% :('
+                    display_text = 'Damage:' + str(int(device.stats.damage))+ '% :('
 
                 else:
                     display_text = 'Perfect!:)'
@@ -160,7 +173,6 @@ class AddScreen(gen.Xscreen):
             # print(total_time,dt,time_start, pygame.time.get_ticks())
 
             total_time += dt
-
 
             self.draw_selected((0, 0), (df.display_width, 20), 50, df.white)
             self.message_display('Enemies:' + str(device.stats.total - device.stats.killed), "monospace", 20, (0, 0), df.orange)

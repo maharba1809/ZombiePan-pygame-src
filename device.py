@@ -17,23 +17,23 @@ class AddSound(AddWin):
         pygame.init()
         assetsDir = var.assetsDir
 
-        self.sound_col = pygame.mixer.Sound(file = assetsDir + 'comical_liquid_gel_splat.ogg')
+        self.sound_col = pygame.mixer.Sound(file=assetsDir + 'comical_liquid_gel_splat.ogg')
         self.sound_col.set_volume(0.5)
-        self.sound_err = pygame.mixer.Sound(file = assetsDir + '327736__distillerystudio__error-03.ogg')
+        self.sound_err = pygame.mixer.Sound(file=assetsDir + '327736__distillerystudio__error-03.ogg')
         self.sound_err.set_volume(0.5)
-        self.sound_hel = pygame.mixer.Sound(file = assetsDir + 'helicopter.ogg')
-        self.sound_hel.set_volume(0.2)
-        self.sound_loser = pygame.mixer.Sound(file = assetsDir + '113988__kastenfrosch__verloren.ogg')
+        self.sound_hel = pygame.mixer.Sound(file=assetsDir + 'helicopter.ogg')
         self.sound_hel.set_volume(0.5)
-        self.sound_winer = pygame.mixer.Sound(file = assetsDir + '270528littlerobotsoundfactoryjingle-win-00.ogg')
+        self.sound_loser = pygame.mixer.Sound(file=assetsDir + '113988__kastenfrosch__verloren.ogg')
+        self.sound_hel.set_volume(0.5)
+        self.sound_winer = pygame.mixer.Sound(file=assetsDir + '270528littlerobotsoundfactoryjingle-win-00.ogg')
         self.sound_winer.set_volume(0.5)
-        self.sound_bullet_file = assetsDir + 'single_water_drop.ogg'
+        self.sound_bullet_file = assetsDir + 'MP5 Firing-SoundBible.com-434501860.wav'
         self.sound_bullet = pygame.mixer.Sound(file=self.sound_bullet_file)
         self.sound_bullet.set_volume(0.5)
         self.music_enabled = True
         self.sound_enabled = True
         self.music_theme = var.assetsDir + 'Little Swans Game.ogg'
-
+        self.sound_attack = pygame.mixer.Sound(file=assetsDir + 'Zombie Gets Attacked-SoundBible.com-20348330.wav')
         print('sound created')
 
 
@@ -65,7 +65,6 @@ class Ranking():
         self.damage = 0
         self.level = 0
         self.life = 100
-        self.damage_rate = 0.008
         self.damage = 0
         print('instance of Ranking')
         self.map_name = ''
@@ -76,11 +75,11 @@ class Ranking():
         self.default_bullets_avaiable = 100
         self.bullet_available = self.default_bullets_avaiable
 
-    def add_damage(self):
+    def add_damage(self, damage_rate):
 
-        self.damage += self.damage_rate
-        self.life -= self.damage_rate*100
-        print('Damage', round(self.damage*100, 1), int(self.life))
+        self.damage += damage_rate
+        self.life -= damage_rate
+        print('Damage', round(self.damage, 0), int(self.life))
 
     def add_kill(self):
         self.killed += 1
@@ -101,7 +100,6 @@ class Ranking():
             if datetime.datetime.now() - df.dead_time > datetime.timedelta(seconds=df.delay):
                 return True
             return False
-
 
         return False
 
