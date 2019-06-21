@@ -1,8 +1,7 @@
 ![alt text]()
-[![Audi R8](https://linuxparaorcos.files.wordpress.com/2019/06/version_1.1.6.png?w=748&h=589)](https://youtu.be/tGY9dSqrO8Q
-)
+[![Audi R8](https://linuxparaorcos.files.wordpress.com/2019/06/version_1.1.6.png?w=748&h=589)](https://youtu.be/xbB2Gn_d1VE)
 
-#Version 1.1.5
+#Version 1.1.6 Latest Version!
 Free video game in python & pygame. Shoot the zombies from an helicopter and you keep your home safe. 
 Source code provided to work in linux and Windows 
 
