@@ -7,7 +7,7 @@ print('Loading Sound and Video')
 class AddWin():
     def _init_(self):
         pygame.init()
-        pygame.display.set_caption('Zombie Pan 1.1.5')
+        pygame.display.set_caption('Zombie Pan 1.1.6')
 
 
 class AddSound(AddWin):
@@ -79,7 +79,7 @@ class Ranking():
 
         self.damage += damage_rate
         self.life -= damage_rate
-        print('Damage', round(self.damage, 0), int(self.life))
+        # print('Damage', round(self.damage, 0), int(self.life))
 
     def add_kill(self):
         self.killed += 1

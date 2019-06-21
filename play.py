@@ -12,7 +12,7 @@ import random
 import pause
 import imp
 import datetime
-
+import zombies as zmb
 
 
 
@@ -24,6 +24,7 @@ class AddScreen(gen.Xscreen):
     def run(self):
         imp.reload(sp)
         imp.reload(final)
+        imp.reload(zmb)
 
         print('\n')
         if device.audio.sound_enabled: device.audio.sound_hel.play()
@@ -35,7 +36,7 @@ class AddScreen(gen.Xscreen):
         info_loser = sp.Sprite2(var.assetsDir + 'disabled.png', df.display_width * 0.5 - 40, df.display_height * 0.5 - 40, 80, 80, 0,
                                 0)
 
-        horde = sp.Horde()
+        horde = zmb.Horde()
         horde.map_gap = self.map.gap
         horde.limit = self.map.total
         horde.update()
@@ -51,7 +52,7 @@ class AddScreen(gen.Xscreen):
         device.stats.new_level()
         total_time = 0
 
-        home = sp.Home()
+        home = sp.House()
         home.load_images()
 
         while not self.stopEngine:
@@ -93,11 +94,11 @@ class AddScreen(gen.Xscreen):
             var.gameDisplay.fill(df.black)
             self.draw_sprite2(background)
 
-            weapon.moveBullets()
             # self.draw_sprite2(hel)
             hel.animate()  # callls animation defs
 
             home.animate() #call home animation
+            weapon.moveBullets()
             # if hel.rect.x>0.5*df.display_width:
             horde.enemy_control(total_time)
             # print( home.rect.collidelist(horde.enemies))
@@ -105,13 +106,11 @@ class AddScreen(gen.Xscreen):
             for enemy in horde.enemies:
                 enemy.animate()
                 if enemy.rect.colliderect(home.rect):
-                    if enemy.attack(): #delays attack one fps
-                        print('under attacking!')
-                        if device.audio.sound_enabled:
-                            device.audio.sound_attack.play()
-                        device.stats.add_damage(enemy.damage_rate)
-                        if device.stats.life <= 0:
-                            break
+                    enemy.preattack = True
+                    enemy.running = False
+                        # enemy.rect.x -=5
+                    if device.stats.life <= 0:
+                        break
 
                 # Collision detection
                 if len(weapon.magazine)>0:
@@ -171,18 +170,18 @@ class AddScreen(gen.Xscreen):
             var.clock.tick(var.fps)
             dt = pygame.time.get_ticks() - time_start
             # print(total_time,dt,time_start, pygame.time.get_ticks())
-
             total_time += dt
-
+            # print('2',pygame.time.get_ticks() - time_start)
             self.draw_selected((0, 0), (df.display_width, 20), 50, df.white)
-            self.message_display('Enemies:' + str(device.stats.total - device.stats.killed), "monospace", 20, (0, 0), df.orange)
+            self.message_display('Enemies:' + str(device.stats.total - device.stats.killed), "monospace", 20, (0, 0),
+                                 df.orange)
             self.message_display('Exp:' + str(int(device.stats.experience)), "monospace", 20, (150, 0), df.violet)
             self.message_display('Life:' + str(int(device.stats.life)) + "%", "monospace", 20, (250, 0), df.orange)
             self.message_display('Map:' + str(device.stats.level), "monospace", 20, (400, 0), df.orange)
-            self.message_display('Time:' + str(round(total_time,1)), "monospace", 20, (500, 0), df.red)
-            self.message_display('Bullets:' + str(weapon.bullet_available), "monospace", 20, (650,  0), df.violet)
+            # self.message_display('Time:' + str(round(total_time, 1)), "monospace", 20, (500, 0), df.red)
+            self.message_display('Bullets:' + str(weapon.bullet_available), "monospace", 20, (650, 0), df.violet)
 
             pygame.display.update()
-
+            # print('1',pygame.time.get_ticks() - time_start)
 
 

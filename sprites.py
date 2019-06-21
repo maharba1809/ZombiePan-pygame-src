@@ -192,12 +192,14 @@ class Asprite(pygame.sprite.Sprite):
         self.col = False
         self.imagesRun = []
         self.imagesDead = []
+        self.imagesAttack = []
         self.rect = self.image.get_rect()
         self.rect.x = 20
         self.rect.y = 20
         self.rect.w = 0
         self.rect.h = 0
         self.sound = device.audio.sound_hel
+
 
     def load_images(self):
         for item in self.files_run:
@@ -208,6 +210,7 @@ class Asprite(pygame.sprite.Sprite):
             for item in self.files_dead:
                 images = pygame.image.load(item)
                 self.imagesDead.append(pygame.transform.scale(images, self.fileSizeDead))
+
 
     def animate(self):
         if self.alive:  # lived animation - Run
@@ -229,9 +232,10 @@ class Asprite(pygame.sprite.Sprite):
                 if self.index < len(self.files_dead):
                     self.image = self.imagesDead[self.index]
                     self.index += 1
-                else:
-                    self.index == 0
-                    self.col = True
+                # else:
+                #     self.index = 0
+                #     self.col = True
+
                 if self.rect.w != self.fileSizeDead[0]: self.rect.w = self.fileSizeDead[0]
                 if self.rect.h != self.fileSizeDead[0]: self.rect.h = self.fileSizeDead[1]
         self.move()
@@ -256,29 +260,23 @@ class Asprite(pygame.sprite.Sprite):
     def draw(self):
         var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
 
-class Home (Asprite):
+class House (Asprite):
     def __init__(self):
         Asprite.__init__(self)
-        self.files_run = []
-        self.files_run.append(var.assetsDir + 'casa1.png')
+        asset_path = var.assetsDir + "/house"
+
+        file_name = ['casa1.png', 'casa2.png', 'casa3.png', 'casa4.png', 'casa5.png', 'casa6.png', 'casa7.png', 'casa8.png', 'casa9.png',
+                     'casa10.png','casa11.png']
+        self.files_run = [asset_path + '/' + e for e in file_name]
         self.fileSizeRun = (300, 250)
-        self.files_dead = []
-        self.files_dead.append(var.assetsDir + 'casa1.png')
-        self.files_dead.append(var.assetsDir + 'casa2.png')
-        self.files_dead.append(var.assetsDir + 'casa3.png')
-        self.files_dead.append(var.assetsDir + 'casa4.png')
-        self.files_dead.append(var.assetsDir + 'casa5.png')
-        self.files_dead.append(var.assetsDir + 'casa6.png')
-        self.files_dead.append(var.assetsDir + 'casa7.png')
-        self.files_dead.append(var.assetsDir + 'casa8.png')
-        self.files_dead.append(var.assetsDir + 'casa9.png')
-        self.files_dead.append(var.assetsDir + 'casa10.png')
-        self.files_dead.append(var.assetsDir + 'casa11.png')
-        self.files_dead.append(var.assetsDir + 'casa12.png')
-        self.fileSizeDead = (300, 250)
+
+        # file_name = ['casa1.png']
+        # self.files_dead = [asset_path + '/' + e for e in file_name]
+        # self.fileSizeDead = (300, 250)
+
         self.rect.w = self.fileSizeRun[0]
         self.rect.h = self.fileSizeRun[1]
-        self.rect.x = df.display_width - self.rect.w*0.25
+        self.rect.x = df.display_width - self.rect.w
         self.rect.y = df.display_height - self.rect.h - 20
         self.u = 0
         self.y = 0
@@ -292,132 +290,13 @@ class Home (Asprite):
         elif device.stats.life >40: self.index =5
         elif device.stats.life >30: self.index =6
         elif device.stats.life >20: self.index =7
-        elif device.stats.life >15: self.index =8
-        elif device.stats.life >10: self.index =9
-        elif device.stats.life >5: self.index =10
-        else: self.index = 11
-        self.image = self.imagesDead[self.index]
+        elif device.stats.life >10: self.index =8
+        elif device.stats.life >5: self.index =9
+        else: self.index = 10
+        self.image = self.imagesRun[self.index]
         self.draw()
 
 
-class Enemy(Asprite):
-    def __init__(self):
-        Asprite.__init__(self)
-        self.files_run = []
-        self.files_run.append(var.assetsDir + 'Run1.png')
-        self.files_run.append(var.assetsDir + 'Run2.png')
-        self.files_run.append(var.assetsDir + 'Run3.png')
-        self.files_run.append(var.assetsDir + 'Run4.png')
-        self.files_run.append(var.assetsDir + 'Run5.png')
-        self.files_run.append(var.assetsDir + 'Run6.png')
-        self.fileSizeRun = (70, 77)
-        self.files_dead = []
-        self.files_dead.append(var.assetsDir + 'Dead1.png')
-        self.files_dead.append(var.assetsDir + 'Dead2.png')
-        self.files_dead.append(var.assetsDir + 'Dead3.png')
-        self.files_dead.append(var.assetsDir + 'Dead4.png')
-        self.files_dead.append(var.assetsDir + 'Dead5.png')
-        self.files_dead.append(var.assetsDir + 'Dead6.png')
-        self.files_dead.append(var.assetsDir + 'Dead7.png')
-        self.files_dead.append(var.assetsDir + 'Dead8.png')
-        self.fileSizeDead = (96, 77)
-        self.rect.w = self.fileSizeRun[0]
-        self.rect.h = self.fileSizeRun[1]
-
-        self.hit = False
-        self.attack_delay = 50 #fps
-        self.attack_count = 0
-        self.damage_rate = 2
-
-    def attack(self):
-        if self.alive:
-            self.u *= 0.5
-            self.attack_count += 1
-            if self.attack_count > self.attack_delay:
-                self.hit = True         #trigger hit
-                self.attack_count = 0   #return new attack
-
-                if self.rect.x + self.rect.w >= df.display_width:
-                    self. u = 0
-            else:
-                self.hit = False
-        else:
-            self.hit = False
-
-        return self.hit
-
-class ChildEnemy(Enemy):
-    def __init__(self):
-        Enemy.__init__(self)
-        self.files_run = []
-        self.files_run.append(var.assetsDir + 'kz1.png')
-        self.files_run.append(var.assetsDir + 'kz2.png')
-        self.files_run.append(var.assetsDir + 'kz3.png')
-        self.files_run.append(var.assetsDir + 'kz4.png')
-        self.files_run.append(var.assetsDir + 'kz5.png')
-        self.files_run.append(var.assetsDir + 'kz6.png')
-        self.files_run.append(var.assetsDir + 'kz7.png')
-        self.files_run.append(var.assetsDir + 'kz8.png')
-        self.files_run.append(var.assetsDir + 'kz9.png')
-        self.files_run.append(var.assetsDir + 'kz10.png')
-        self.fileSizeRun = (70, 77)
-        self.files_dead = []
-        self.files_dead.append(var.assetsDir + 'zd1.png')
-        self.files_dead.append(var.assetsDir + 'zd2.png')
-        self.files_dead.append(var.assetsDir + 'zd3.png')
-        self.files_dead.append(var.assetsDir + 'zd4.png')
-        self.files_dead.append(var.assetsDir + 'zd5.png')
-        self.files_dead.append(var.assetsDir + 'zd6.png')
-        self.files_dead.append(var.assetsDir + 'zd7.png')
-        self.files_dead.append(var.assetsDir + 'zd8.png')
-        self.files_dead.append(var.assetsDir + 'zd9.png')
-        self.files_dead.append(var.assetsDir + 'zd10.png')
-        self.fileSizeDead = (70, 77)
-        self.damage_rate = 1
-
-class Horde():
-
-    def __init__(self):
-        self.enemies = []
-        self.limit = 0
-        self.count = 0
-        self.map_gap = 0
-        self.time_to_born = []
-        self.umax = 2
-
-    def new_enemy(self):
-        if self.count < self.limit:
-            if int(random.random()*100) % 2:
-                enemy = Enemy()
-                print('New bald zombie')
-            else:
-                enemy = ChildEnemy()
-                print('New kid zombie')
-            # enemy2 = ChildEnemy()
-            self.count += 1
-            enemy.load_images()
-            # print(enemy.rect.h)
-            enemy.rect.y =  df.display_height - self.map_gap - enemy.rect.h - 20*random.random()
-            # enemy.rect.y =  df.display_height - self.map_gap - 77*random.random()
-
-            enemy.u = 3*(1+random.random())
-            print(enemy.u)
-
-            self.enemies.append(enemy)
-
-
-    def enemy_control(self,t0):
-        if self.time_to_born:
-            if t0 >= self.time_to_born[0]:
-                self.new_enemy()
-                del self.time_to_born[0]
-
-
-
-    def update(self):
-        for i in range(1,self.limit+1):
-            self.time_to_born.append(i*1000)
-        # print('ttb:',self.time_to_born)
 
 
 class Button(Sprite2):
