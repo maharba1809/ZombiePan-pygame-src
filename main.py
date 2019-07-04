@@ -1,9 +1,12 @@
+
 import pygame
 import menu
 
-print('Loading main')
-gameExit = False
-menuScreen = menu.AddScreen()
-menuScreen.run()
-pygame.display.quit()
-pygame.quit()
+if __name__ == "__main__":
+    print('Loading main')
+    gameExit = False
+    menuScreen = menu.AddScreen()
+    menuScreen.run()
+    pygame.display.quit()
+    pygame.quit()
+    

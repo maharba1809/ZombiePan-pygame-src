@@ -1,7 +1,6 @@
-import os
+
 print('Loading defaults')
-dir_path = os.path.dirname(os.path.realpath(__file__))
-print(dir_path)
+
 black = ( 0, 0, 0 )
 white = ( 255, 255, 255 )
 red = ( 255 , 0, 0 )

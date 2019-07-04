@@ -2,12 +2,13 @@ import pygame
 import var
 import datetime
 import defaults as df
+import os
 print('Loading Sound and Video')
 
 class AddWin():
     def _init_(self):
         pygame.init()
-        pygame.display.set_caption('Zombie Pan 1.1.6')
+        pygame.display.set_caption('Zombie Pan 1.1.5')
 
 
 class AddSound(AddWin):
@@ -16,7 +17,10 @@ class AddSound(AddWin):
         pygame.mixer.pre_init(frequency=44100, size=-32, channels=2, buffer=4096)
         pygame.init()
         assetsDir = var.assetsDir
-
+        if not os.path.isfile(assetsDir + 'comical_liquid_gel_splat.ogg'):
+            print('ERROR No Sound exist in ',os.getcwd(),assetsDir + 'comical_liquid_gel_splat.ogg')
+        else:
+            print('file exists')
         self.sound_col = pygame.mixer.Sound(file=assetsDir + 'comical_liquid_gel_splat.ogg')
         self.sound_col.set_volume(0.5)
         self.sound_err = pygame.mixer.Sound(file=assetsDir + '327736__distillerystudio__error-03.ogg')

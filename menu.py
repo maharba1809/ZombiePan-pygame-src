@@ -1,4 +1,8 @@
 
+import os
+script_path = os.path.dirname(os.path.realpath( __file__ ))
+print('wd',script_path)
+os.chdir(script_path)
 import sprites as sp
 import defaults as df
 import pygame
@@ -50,10 +54,9 @@ class AddScreen(gen.Xscreen):
         while not self.stopEngine:
             for event in pygame.event.get():
 
-                if event.type == pygame.QUIT:
-
-                    pygame.quit()
-                    quit()
+                if event.type == pygame.QUIT:                    
+                    self.stopEngine = True
+                    
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         self.stopEngine = True

@@ -1,9 +1,12 @@
 ![alt text]()
 [![Audi R8](https://linuxparaorcos.files.wordpress.com/2019/06/version_1.1.6.png?w=748&h=589)](https://youtu.be/xbB2Gn_d1VE)
 
-#Version 1.1.6 Latest Version!
+#Version 1.1.5 Latest Version!. This version has certains  builds for Linux and Windows. Mac, wait me a minute!.
+
 Free video game in python & pygame. Shoot the zombies from an helicopter and you keep your home safe. 
 Source code provided to work in linux and Windows 
+
+I'll provide support as long as I could since we're running out of funding...until a sponsor come
 
 #Capabilities:
 -   GUI
@@ -21,51 +24,55 @@ Source code provided to work in linux and Windows
 Join to this project or support it for future development, donations and feedback at
 nordik14@gmail.com
 
+#Run from builds:
+
+Linux user must download ZombiePan.tar.gz uncompress it and run in terminal ./run 
+Windows user must download ZombiePan.rar uncompress it and run run.exe
+
+
 #Download 
 
- https://github.com/maharba1809/ZombiePan-pygame-src
+https://github.com/maharba1809/ZombiePan-pygame-src
 
-#Install for Windows:
-I-  Install from source:
+#Dependencies: pygame python tested in Windows 10 and Ubuntu
 
-    1.  Install python version 3
-        Follow this tutorial:
-        https://www.ics.uci.edu/~pattis/common/handouts/pythoneclipsejava/python.html
 
-    2.  Add environment variable the path where python exe is installed normally it's in:
+#Install from Source: #Download this package #Windows:
 
-        C:\Users\myusername\AppData\Local\Programs\Python\Python37-32
+1    Install pip3, python3, and pygame
 
-        Follow this tutorial:
-            https://geek-university.com/python/add-python-to-the-windows-path/
+#WINDOWS
+    Run python main.py or double click in run.bat 
 
-    3.  Install pip
-        a   unzip ZombiePan-pygame-src.zip in a folder
-        b   option 1: open the root folder where this game is located -> right shift + right click -> open power shell here
-            option 2: cd folder/ZombiePan-pygame-src
-        run in cmd or PS: python get-pip.py
-
-    4.  Install pygame:
-        open cmd and run:
-        pip install pygame
-
-    5.  Run
-        a   python main.py
-        b   double click in run.bat
-
-#Install for Linux:
-
-install python3
--   sudo apt-get install python3
-
-install pip 3 for python 3
--    sudo apt install python3-pip
-
-install pygame for python3
--    sudo pip3 install pygame
-
-#Run 
-in terminal run
--   sh run.sh
+#LINUX
+2   Run  pyton3 main.py or run run.sh in terminal
     
 
+#-------------------------------------------------------------------------- #Español #--------------------------------------------------------------------------
+
+Video juego gratis desarrollado por mi  en python & pygame. Dispara a los zombies desde un helicoptero y manten tu casa segura-
+
+#Version 1.1.5 La ultima Version!. Esta version ya cuenta con ejecutables para que no necesites instalar python .. para windows y linux pero no para mac aun, aguantame un rato.
+Probado en windows y linux
+
+#INSTRUCCIONES PARA INSTALLAR DESDE CODIGO FUENTE
+
+    Instala python pygame y pip3 deacuerdo a tu SO linux o Windows
+    Descarga y extrae este paquete en en lugar deseado.
+    Executa el archivo run.bat para correr en windows o run.sh para correr linux
+
+#INSTRUCCIONES PARA CORRER DESDE EXECUTABLES:
+
+LINUX:
+
+1. DESCARGA EL ARCHIVO ZombiePan.tar.gz
+2. DECOMPRIME
+2. CORRER EN TERMINAL /.run
+
+WINDOSW 7-10
+
+1. DESCARGA EL ARCHIVO ZombiePan.rar
+2. DESCOMPRIME
+3. DOBLE CLICK EN run.exe
+
+Disfrutenlo  estare dando soporte como pueda y hasta que encuentre un sponsor...
