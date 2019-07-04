@@ -1,0 +1,10 @@
+
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.1.5
+Type=Application
+Terminal=true
+Exec=./run
+Name=ZombiePan
+Icon= 
+
