@@ -10,15 +10,7 @@ I'll provide support as long as I could since we're running out of funding...unt
 
 #Capabilities:
 -   GUI
--   Controls menu, audio adjustment, maps
--   Music, Sounds, interactivity
--   key controls s, arrows
--   14 levels
--   2 zomby designs
--   multishoot
--   efficient coding
--   updates
--   independient development
+-   Controls menu,music, music, 14 levels, 2 zomby designs
 
 #Contact
 Join to this project or support it for future development, donations and feedback at
@@ -50,7 +42,7 @@ https://github.com/maharba1809/ZombiePan-pygame-src
 
 #-------------------------------------------------------------------------- #Español #--------------------------------------------------------------------------
 
-Video juego gratis desarrollado por mi  en python & pygame. Dispara a los zombies desde un helicoptero y manten tu casa segura-
+Video juego gratis desarrollado por mi en python & pygame. Dispara a los zombies desde un helicoptero y manten tu casa segura-
 
 #Version 1.1.5 La ultima Version!. Esta version ya cuenta con ejecutables para que no necesites instalar python .. para windows y linux pero no para mac aun, aguantame un rato.
 Probado en windows y linux
