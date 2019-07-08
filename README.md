@@ -1,7 +1,8 @@
 ![alt text]()
 [![Audi R8](https://linuxparaorcos.files.wordpress.com/2019/06/version_1.1.6.png?w=748&h=589)](https://youtu.be/xbB2Gn_d1VE)
 
-#Version 1.1.5 Latest Version!. This version has certains  builds for Linux and Windows. Mac, wait me a minute!.
+July 7th, 2019:
+#Version 1.1.6 Latest Version!. This version has certains  builds for Linux and Windows. Mac, wait me a minute!.
 
 Free video game in python & pygame. Shoot the zombies from an helicopter and you keep your home safe. 
 Source code provided to work in linux and Windows 
@@ -38,7 +39,17 @@ https://github.com/maharba1809/ZombiePan-pygame-src
 
 #LINUX
 2   Run  pyton3 main.py or run run.sh in terminal
-    
+
+#Changes:
+
+1.1.6 July 2019:
+New characters, baldy, pirate, and childs
+
+1.1.5: 1 month ago
+House to be destroyed    
+
+1.1.4 last 2 months:
+Bugs...
 
 #-------------------------------------------------------------------------- #Español #--------------------------------------------------------------------------
 

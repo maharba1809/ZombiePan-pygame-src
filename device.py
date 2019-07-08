@@ -4,11 +4,12 @@ import datetime
 import defaults as df
 import os
 print('Loading Sound and Video')
+version = '1.1.6'
 
 class AddWin():
     def _init_(self):
         pygame.init()
-        pygame.display.set_caption('Zombie Pan 1.1.5')
+        pygame.display.set_caption('Zombie Pan '+ version)
 
 
 class AddSound(AddWin):

@@ -30,7 +30,7 @@ class Enemy(pygame.sprite.Sprite):
         self.size_attack = (50, 77)
 
         self.hit = False
-        self.attack_delay = 30 #fps
+        self.attack_delay = 15 #fps
         self.attack_count = 0
         self.damage_rate = 4
         self.hitting = False
@@ -41,7 +41,7 @@ class Enemy(pygame.sprite.Sprite):
     def load_images(self):
         print('\n')
         for item in self.files_run:
-            print('loading file',item)
+            print('loading file', item)
             images = pygame.image.load(item)
             self.imagesRun.append(pygame.transform.scale(images, self.fileSizeRun))
 
@@ -185,6 +185,46 @@ class ChildEnemy(Enemy):
 
         self.damage_rate = 2
 
+
+class MariaEnemy(Enemy):
+    def __init__(self):
+        Enemy.__init__(self)
+        asset_path = var.assetsDir + "maria100"
+
+        file_name = ['run_01.png','run_02.png','run_03.png','run_04.png','run_05.png','run_06.png','run_07.png','run_08.png','run_09.png','run_10.png']
+        self.files_run = [asset_path + '/' + e for e in file_name]
+        self.fileSizeRun = (63, 77)
+
+        file_name = ['dead_1.png', 'dead_2.png', 'dead_3.png', 'dead_4.png', 'dead_5.png', 'dead_6.png', 'dead_7.png', 'dead_8.png']
+        self.files_dead = [asset_path + '/' + e for e in file_name]
+        self.fileSizeDead = (112, 77)
+
+        file_name = ['attack_1.png', 'attack_2.png', 'attack_3.png', 'attack_4.png', 'attack_5.png', 'attack_6.png']
+        self.files_attack = [asset_path + '/' + e for e in file_name]
+        self.size_attack = (57, 77)
+
+        self.damage_rate = 3
+
+
+class PirateEnemy(Enemy):
+    def __init__(self):
+        Enemy.__init__(self)
+        asset_path = var.assetsDir + "pirat100"
+
+        file_name = ['run_-01.png', 'run_-02.png', 'run_-03.png', 'run_-04.png', 'run_-05.png', 'run_-06.png', 'run_-07.png', 'run_-08.png', 'run_-09.png', 'run_-10.png']
+        self.files_run = [asset_path + '/' + e for e in file_name]
+        self.fileSizeRun = (67, 77)
+
+        file_name = ['dead_1.png', 'dead_2.png', 'dead_3.png', 'dead_4.png', 'dead_5.png', 'dead_6.png', 'dead_7.png', 'dead_8.png']
+        self.files_dead = [asset_path + '/' + e for e in file_name]
+        self.fileSizeDead = (96, 77)
+
+        file_name = ['attack_1.png', 'attack_2.png', 'attack_3.png', 'attack_4.png', 'attack_5.png', 'attack_6.png']
+        self.files_attack = [asset_path + '/' + e for e in file_name]
+        self.size_attack = (51, 77)
+
+        self.damage_rate = 4
+
 class Horde():
 
     def __init__(self):
@@ -197,32 +237,36 @@ class Horde():
 
     def new_enemy(self):
         if self.count < self.limit:
-            if int(random.random()*100) % 2 ==0:
-                enemy = Enemy()
-                # print('New bald zombie')
-            else:
+            random_enemy = int(random.random()*1000)
+            if random_enemy % 2 == 0:
+                enemy = MariaEnemy()
+                enemy.u = 2.5
+            elif random_enemy % 3 == 0:
                 enemy = ChildEnemy()
-                # print('New kid zombie')
-            # enemy2 = ChildEnemy()
+                enemy.u = 4
+            elif random_enemy % 5 == 0:
+                enemy = PirateEnemy()
+                enemy.u = 3
+            else:
+                enemy = Enemy()
+                enemy.u = 2
+
             self.count += 1
             enemy.load_images()
             # print(enemy.rect.h)
-            enemy.rect.y =  df.display_height - self.map_gap - enemy.rect.h - 20*random.random()
+            enemy.rect.y = df.display_height - self.map_gap - enemy.rect.h - 20*random.random()
             # enemy.rect.y =  df.display_height - self.map_gap - 77*random.random()
 
-            enemy.u = 3*(1+random.random())
+            # enemy.u = 3*(1+random.random())
             # print(enemy.u)
 
             self.enemies.append(enemy)
-
 
     def enemy_control(self,t0):
         if self.time_to_born:
             if t0 >= self.time_to_born[0]:
                 self.new_enemy()
                 del self.time_to_born[0]
-
-
 
     def update(self):
         for i in range(1,self.limit+1):
