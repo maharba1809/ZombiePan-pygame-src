@@ -11,8 +11,8 @@ green = (124,252,0)
 violet = (138,43,226)
 gray = (112,128,144)
 
-display_width = 800
-display_height = 600
+display_width = 1100
+display_height = 800
 
 total = 15
 dead_time = 0

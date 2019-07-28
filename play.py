@@ -104,7 +104,13 @@ class AddScreen(gen.Xscreen):
             # print( home.rect.collidelist(horde.enemies))
             # print('rengine')
             for enemy in horde.enemies:
+
+                if enemy.dead:
+                    horde.enemies.remove(enemy)
+                    continue
+
                 enemy.animate()
+
                 if enemy.rect.colliderect(home.rect):
                     enemy.preattack = True
                     enemy.running = False
@@ -124,10 +130,13 @@ class AddScreen(gen.Xscreen):
                                 if device.audio.sound_enabled:
                                     device.audio.sound_col.play()
 
-                                device.stats.add_kill()
-                                enemy.alive = False  # changes statsus
+                                enemy.descrease_life()
+                                if not enemy.alive:
+                                    device.stats.add_kill()
+                                    df.dead_time = datetime.datetime.now()
+
                                 weapon.magazine.remove(bullet)
-                                df.dead_time = datetime.datetime.now()
+
 
             # control
             # killed = 10000

@@ -32,11 +32,14 @@ class Enemy(pygame.sprite.Sprite):
         self.hit = False
         self.attack_delay = 15 #fps
         self.attack_count = 0
-        self.damage_rate = 4
+        self.damage_rate = 2
         self.hitting = False
         self.preattack = False
         self.running = True
         self.index = 0
+        self.dead = False
+        self.life = 100
+        self.dead_rate = 50
 
     def load_images(self):
         print('\n')
@@ -124,9 +127,9 @@ class Enemy(pygame.sprite.Sprite):
         if self.index < len(self.files_dead):
             self.image = self.imagesDead[self.index]
             self.index += 1
-        # else:
-            #     self.index = 0
-            #     self.col = True
+        else:
+            self.dead = True
+
         if self.rect.w != self.fileSizeDead[0]: self.rect.w = self.fileSizeDead[0]
         if self.rect.h != self.fileSizeDead[0]: self.rect.h = self.fileSizeDead[1]
 
@@ -164,6 +167,10 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x += self.u
         self.rect.y += self.v
 
+    def descrease_life(self):
+        self.life -= self.dead_rate
+        if self.life <=0:
+            self.alive = False
 
 class ChildEnemy(Enemy):
     def __init__(self):
@@ -184,7 +191,7 @@ class ChildEnemy(Enemy):
         self.size_attack = (60, 77)
 
         self.damage_rate = 2
-
+        self.dead_rate = 34
 
 class MariaEnemy(Enemy):
     def __init__(self):
@@ -203,8 +210,8 @@ class MariaEnemy(Enemy):
         self.files_attack = [asset_path + '/' + e for e in file_name]
         self.size_attack = (57, 77)
 
-        self.damage_rate = 3
-
+        self.damage_rate = 2
+        self.dead_rate = 50
 
 class PirateEnemy(Enemy):
     def __init__(self):
@@ -223,7 +230,8 @@ class PirateEnemy(Enemy):
         self.files_attack = [asset_path + '/' + e for e in file_name]
         self.size_attack = (51, 77)
 
-        self.damage_rate = 4
+        self.damage_rate = 3
+        self.dead_rate = 25
 
 class Horde():
 

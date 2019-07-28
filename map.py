@@ -45,20 +45,20 @@ class AddScreen(gen.Xscreen):
         mapsback = sp.Sprite2(self.background_file, 0, 0, df.display_width, df.display_height, 0, 0)
         if not len(device.stats.maps)>0:
             maps = []
-            maps.append(sp.Imap(self.map1_file, 150, 50, 1, 20, False, 20))
-            maps.append(sp.Imap(self.map2_file, 300, 50, 2, 20, True, 30))
-            maps.append(sp.Imap(self.map3_file, 450, 50, 3, 20, True, 40))
-            maps.append(sp.Imap(self.map4_file, 600, 50, 4, 20, True, 50))
-            maps.append(sp.Imap(self.map5_file, 150, 150, 5, 20, True, 55))
-            maps.append(sp.Imap(self.map6_file, 300, 150, 6, 20, True, 60))
-            maps.append(sp.Imap(self.map7_file, 450, 150, 7, 20, True, 65))
-            maps.append(sp.Imap(self.map8_file, 600, 150, 8, 20, True, 70))
-            maps.append(sp.Imap(self.map9_file, 150, 250, 9, 20, True, 75))
-            maps.append(sp.Imap(self.map10_file, 300, 250, 10, 20, True, 80))
-            maps.append(sp.Imap(self.map11_file, 450, 250, 11, 20, True, 85))
-            maps.append(sp.Imap(self.map12_file, 600, 250, 12, 20, True, 90))
-            maps.append(sp.Imap(self.map13_file, 150, 350, 13, 20, True, 95))
-            maps.append(sp.Imap(self.map14_file, 300, 350, 14, 20, True, 100))
+            maps.append(sp.Imap(self.map1_file, df.display_width*0.2, 50, 1, 20, False, 10 ))
+            maps.append(sp.Imap(self.map2_file, df.display_width*0.4, 50, 2, 20, True, 10 ))
+            maps.append(sp.Imap(self.map3_file, df.display_width*0.6, 50, 3, 20, True, 12 ))
+            maps.append(sp.Imap(self.map4_file, df.display_width*0.8, 50, 4, 20, True, 12 ))
+            maps.append(sp.Imap(self.map5_file, df.display_width*0.2, 200, 5, 20, True, 13 ))
+            maps.append(sp.Imap(self.map6_file, df.display_width*0.4, 200, 6, 20, True, 14 ))
+            maps.append(sp.Imap(self.map7_file, df.display_width*0.6, 200, 7, 20, True, 15 ))
+            maps.append(sp.Imap(self.map8_file, df.display_width*0.8, 200, 8, 20, True, 16 ))
+            maps.append(sp.Imap(self.map9_file, df.display_width*0.2, 350, 9, 20, True, 17 ))
+            maps.append(sp.Imap(self.map10_file, df.display_width*0.4, 350, 10, 20, True, 18 ))
+            maps.append(sp.Imap(self.map11_file, df.display_width*0.6, 350, 11, 20, True, 19 ))
+            maps.append(sp.Imap(self.map12_file, df.display_width*0.8, 350, 12, 20, True, 20 ))
+            maps.append(sp.Imap(self.map13_file, df.display_width*0.2, 500, 13, 20, True, 21 ))
+            maps.append(sp.Imap(self.map14_file, df.display_width*0.4, 500, 14, 20, True, 22 ))
             # maps.append(sp.Imap(self.map14_file, 300, 350, 14, 20, False, 1))
             for m in maps:
                 m.hover_text = m.file
@@ -67,7 +67,7 @@ class AddScreen(gen.Xscreen):
 
         else:
             maps = device.stats.maps
-        button_back = sp.Button(self.exit_file, 400, 450)
+        button_back = sp.Button(self.exit_file, df.display_width*0.5, df.display_height*0.8)
 
         total_time = 0
         while not self.stopEngine:

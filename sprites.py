@@ -123,7 +123,7 @@ class AddBullet(Sprite2):
 class Weapon():
     def __init__(self,x,y):
         self.magazine = []
-        self.limit = 5
+        self.limit = 10
         self.x = 0
         self.y = 0
         self.uinert = 0

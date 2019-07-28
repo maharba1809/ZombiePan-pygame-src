@@ -34,20 +34,20 @@ class AddScreen(gen.Xscreen):
         mapsback = sp.Sprite2(self.backfile, 0, 0,df.display_width , df.display_height, 0, 0)
         btn = []
 
-        genBtn = sp.Button(self.play_file, 150, 450)
+        genBtn = sp.Button(self.play_file, df.display_width*0.2, df.display_height*0.8)
         genBtn.hover_text = self.play_txt
         btn.append( genBtn)
 
 
-        genBtn = sp.Button(self.menu_file, 300, 450 )
+        genBtn = sp.Button(self.menu_file, df.display_width*0.4, df.display_height*0.8)
         genBtn.hover_text = self.menu_txt
         btn.append(genBtn)
 
-        genBtn = sp.Button(self.adj_file, 450, 450)
+        genBtn = sp.Button(self.adj_file, df.display_width*0.6, df.display_height*0.8)
         genBtn.hover_text = self.adj_txt
         btn.append(genBtn)
 
-        genBtn = sp.Button(self.cancel_file, 600, 450)
+        genBtn = sp.Button(self.cancel_file, df.display_width*0.8, df.display_height*0.8)
         genBtn.hover_text = self.cancel_text
         btn.append(genBtn)
 
