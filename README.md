@@ -1,5 +1,5 @@
 ![alt text]()
-[![Audi R8](https://linuxparaorcos.files.wordpress.com/2019/06/version_1.1.6.png?w=748&h=589)](https://youtu.be/xbB2Gn_d1VE)
+[![Audi R8](https://linuxparaorcos.files.wordpress.com/2019/06/sin-tc3adtulo.jpg?w=748&h=575)](https://youtu.be/xbB2Gn_d1VE)
 
 July 7th, 2019:
 #Version 1.1.6 Latest Version!. This version has certains  builds for Linux and Windows. Mac, wait me a minute!.
