@@ -1,25 +1,24 @@
 
 import pygame
 import var
-import device
+
 print('Loading Xscreen')
 
 class Xscreen():
     def __init__(self):
-
-
         self.stopEngine = False
-
         print('generic screen created')
-        device.audio.play_music()
+        self.font_type = 'comicsansms'
+        self.font_size = 20
+        self.font = pygame.font.SysFont(self.font_type, self.font_size)
 
     def draw_sprite2(self, sprite):
         var.gameDisplay.blit(sprite.image, (sprite.rect.x, sprite.rect.y))
 
 
     def message_display(self, text, typefont, size, center, color):
-        myfont = pygame.font.SysFont(typefont, size)
-        label = myfont.render(text, 1, color)
+
+        label = self.font.render(text, 1, color)
         var.gameDisplay.blit(label, center)
 
 

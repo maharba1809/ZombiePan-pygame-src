@@ -4,8 +4,8 @@ import defaults as df
 import var
 import device
 import random
-import time
-class Sprite:
+
+class Sprite():
     #first try to defina image  as sprite - obsolete but some obj still need it
     def __init__(self, img, x, y, velx, vely, scalef ):
         self.x = x
@@ -195,7 +195,7 @@ class Asprite(pygame.sprite.Sprite):
         self.imagesAttack = []
         self.rect = self.image.get_rect()
         self.rect.x = 20
-        self.rect.y = 20
+        self.rect.y = df.display_height*0.1
         self.rect.w = 0
         self.rect.h = 0
         self.sound = device.audio.sound_hel
@@ -265,257 +265,74 @@ class House (Asprite):
         Asprite.__init__(self)
         asset_path = var.assetsDir + "/house"
 
-        file_name = ['casa1.png', 'casa2.png', 'casa3.png', 'casa4.png', 'casa5.png', 'casa6.png', 'casa7.png', 'casa8.png', 'casa9.png',
-                     'casa10.png','casa11.png']
+        file_name = ['alive_01.png', 'alive_02.png', 'alive_03.png', 'alive_04.png', 'alive_05.png', 'alive_06.png',
+                     'alive_07.png', 'alive_08.png', 'alive_09.png','alive_10.png', 'alive_11.png','alive_12.png',
+                     'alive_13.png','alive_14.png']
         self.files_run = [asset_path + '/' + e for e in file_name]
         self.fileSizeRun = (300, 250)
 
-        # file_name = ['casa1.png']
-        # self.files_dead = [asset_path + '/' + e for e in file_name]
-        # self.fileSizeDead = (300, 250)
+        file_name = ['dead_01.png', 'dead_02.png', 'dead_03.png', 'dead_04.png', 'dead_05.png', 'dead_06.png',
+                     'dead_07.png', 'dead_08.png', 'dead_09.png','dead_10.png', 'dead_11.png','dead_12.png',
+                     'dead_13.png','dead_14.png','dead_14.png']
+        self.files_dead = [asset_path + '/' + e for e in file_name]
+        self.fileSizeDead = (300, 250)
 
         self.rect.w = self.fileSizeRun[0]
         self.rect.h = self.fileSizeRun[1]
-        self.rect.x = df.display_width - self.rect.w
-        self.rect.y = df.display_height - self.rect.h - 20
+
         self.u = 0
         self.y = 0
+        self.index = 0
+        self.buffer_index = -1
+
+    def set_position(self):
+        self.rect.x = df.display_width - self.rect.w
+        self.rect.y = df.display_height - self.rect.h - self.gap
 
     def animate(self):
-        if device.stats.life >90: self.index =0
-        elif device.stats.life >80: self.index =1
-        elif device.stats.life >70: self.index =2
-        elif device.stats.life >60: self.index =3
-        elif device.stats.life >50: self.index =4
-        elif device.stats.life >40: self.index =5
-        elif device.stats.life >30: self.index =6
-        elif device.stats.life >20: self.index =7
-        elif device.stats.life >10: self.index =8
-        elif device.stats.life >5: self.index =9
-        else: self.index = 10
-        self.image = self.imagesRun[self.index]
+        if self.alive:
+            if device.stats.life > 90:
+                self.index = 0
+            elif device.stats.life > 80:
+                self.index = 1
+            elif device.stats.life > 60:
+                self.index = 2
+            elif device.stats.life > 40:
+                self.index = 3
+            elif device.stats.life > 30:
+                self.index = 4
+            elif device.stats.life > 28:
+                self.index = 5
+            elif device.stats.life > 26:
+                self.index = 6
+            elif device.stats.life > 24:
+                self.index = 7
+            elif device.stats.life > 22:
+                self.index = 8
+            elif device.stats.life > 20:
+                self.index = 9
+            elif device.stats.life > 15:
+                self.index = 10
+            elif device.stats.life > 10:
+                self.index = 11
+            elif device.stats.life > 5:
+                self.index = 12
+            else:
+                self.index = 13
+
+            if self.index != self.buffer_index: #optimization
+                self.image = self.imagesRun[self.index]
+                self.buffer_index = self.index
+
+            if device.stats.life <= 0:
+                self.index = 0
+                self.alive = False
+        else:
+
+            if self.index < len(self.imagesDead):
+                self.image = self.imagesDead[self.index]
+                self.index += 1
+            else:
+                device.stats.dead_player = True
         self.draw()
 
-
-
-
-class Button(Sprite2):
-    def __init__(self,filename,x,y):
-        w = 70
-        h = 70
-        Sprite2.__init__(self, filename, x, y, w, h, 0, 0)
-        self.hover_text = 'Back /Zurück/Atras'
-        self.click_text = 'Loading/ Laden/ Caragando'
-        self.font =  "monospace"
-        self.font_size = 30
-        self.txt_w = df.display_width
-        self.txt_h = 30
-        self.txt_x = 100
-        self.txt_y = df.display_height - self.txt_h*2
-        self.txt_color= df.gray
-        self.hover_color = df.white
-        self.click_color = df.red
-        self.shadow_w = df.display_width
-        self.shadow_h = df.display_width
-        self.shadow_x = 0
-        self.shadow_y = self.txt_y
-        self.shadow_color = df.white
-        self.index = 0
-        self.highlighted = False
-        self.clicked = False
-        self.max_frame = 10
-        self.animating = False
-        self.txt_x_d = self.txt_x
-        self.txt_y_d = self.txt_y
-        self.shadow_x_d = self.shadow_x
-        self.shadow_y_d = self.shadow_y
-
-    def draw_sprite2(self):
-        var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
-
-    def highlight(self,color):
-        s = pygame.Surface((self.rect.w, self.rect.h))
-        s.set_alpha(50)
-        s.fill(color)
-        pygame.draw.rect(var.gameDisplay, color, [self.rect.x, self.rect.y, self.rect.w, 1])
-        pygame.draw.rect(var.gameDisplay, color, [self.rect.x, self.rect.y, 1, self.rect.h])
-        pygame.draw.rect(var.gameDisplay, color, [self.rect.x, self.rect.y + self.rect.h, self.rect.w, 1])
-        pygame.draw.rect(var.gameDisplay, color, [self.rect.x+self.rect.w, self.rect.y, 1, self.rect.h])
-        var.gameDisplay.blit(s, (self.rect.x, self.rect.y))
-
-
-    def new_shadow(self,color):
-        s = pygame.Surface((self.txt_w, self.txt_h))
-        s.set_alpha(50)
-        s.fill(color)
-        var.gameDisplay.blit(s, (self.shadow_x, self.shadow_y))
-
-    def new_msg(self,text,color1, color2):
-        self.new_shadow(color1)
-        myfont = pygame.font.SysFont(self.font, self.font_size)
-        label = myfont.render(text, 1, color2)
-        var.gameDisplay.blit(label, (self.txt_x, self.txt_y))
-
-    def onClick(self,mouse):
-
-        if self.rect.collidepoint(mouse.get_pos()) == 1:
-            self.highlight(self.hover_color)
-            self.new_msg(self.hover_text, self.hover_color, self.txt_color)
-            # self.highlighted = True
-
-            if mouse.get_pressed()[0]:
-                self.animating = True
-                self.clicked = True
-                print('button clicked', self.file)
-                self.index = 0
-                time.sleep(0.5)
-        else:
-            self.highlight_color = self.hover_color
-
-        if self.animating:self.animate()
-
-        self.draw_sprite2()
-        if self.animating  or not self.clicked:
-            return False
-
-
-    def update(self):
-        for i in range(1,self.limit+1):
-            self.time_to_born.append(i*1000)
-        # print('ttb:',self.time_to_born)
-
-
-class Button(Sprite2):
-    def __init__(self,filename,x,y):
-        w = 70
-        h = 70
-        Sprite2.__init__(self, filename, x, y, w, h, 0, 0)
-        self.hover_text = 'Back /Zurück/Atras'
-        self.click_text = 'Loading/ Laden/ Caragando'
-        self.font =  "monospace"
-        self.font_size = 30
-        self.txt_w = df.display_width
-        self.txt_h = 30
-        self.txt_x = 100
-        self.txt_y = df.display_height - self.txt_h*2
-        self.txt_color= df.gray
-        self.hover_color = df.white
-        self.click_color = df.red
-        self.shadow_w = df.display_width
-        self.shadow_h = df.display_width
-        self.shadow_x = 0
-        self.shadow_y = self.txt_y
-        self.shadow_color = df.white
-        self.index = 0
-        self.highlighted = False
-        self.clicked = False
-        self.max_frame = 10
-        self.animating = False
-        self.txt_x_d = self.txt_x
-        self.txt_y_d = self.txt_y
-        self.shadow_x_d = self.shadow_x
-        self.shadow_y_d = self.shadow_y
-
-    def draw_sprite2(self):
-        var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
-
-    def highlight(self,color):
-        s = pygame.Surface((self.rect.w, self.rect.h))
-        s.set_alpha(50)
-        s.fill(color)
-        pygame.draw.rect(var.gameDisplay, color, [self.rect.x, self.rect.y, self.rect.w, 1])
-        pygame.draw.rect(var.gameDisplay, color, [self.rect.x, self.rect.y, 1, self.rect.h])
-        pygame.draw.rect(var.gameDisplay, color, [self.rect.x, self.rect.y + self.rect.h, self.rect.w, 1])
-        pygame.draw.rect(var.gameDisplay, color, [self.rect.x+self.rect.w, self.rect.y, 1, self.rect.h])
-        var.gameDisplay.blit(s, (self.rect.x, self.rect.y))
-
-
-    def new_shadow(self,color):
-        s = pygame.Surface((self.txt_w, self.txt_h))
-        s.set_alpha(50)
-        s.fill(color)
-        var.gameDisplay.blit(s, (self.shadow_x, self.shadow_y))
-
-    def new_msg(self,text,color1, color2):
-        self.new_shadow(color1)
-        myfont = pygame.font.SysFont(self.font, self.font_size)
-        label = myfont.render(text, 1, color2)
-        var.gameDisplay.blit(label, (self.txt_x, self.txt_y))
-
-    def onClick(self,mouse):
-
-        if self.rect.collidepoint(mouse.get_pos()) == 1:
-            self.highlight(self.hover_color)
-            self.new_msg(self.hover_text, self.hover_color, self.txt_color)
-            # self.highlighted = True
-
-            if mouse.get_pressed()[0]:
-                self.animating = True
-                self.clicked = True
-                print('button clicked', self.file)
-                self.index = 0
-                time.sleep(0.5)
-        else:
-            self.highlight_color = self.hover_color
-
-        if self.animating:self.animate()
-
-        self.draw_sprite2()
-        if self.animating  or not self.clicked:
-
-
-            return False #continue running
-        else:
-            self.clicked = False
-            return True #clicken event is true
-
-    def animate(self):
-        self.index +=1
-        if self.index < self.max_frame:
-            self.highlight(self.click_color)
-            self.new_msg(self.hover_text, self.click_color, self.click_color)
-            self.txt_x += 4
-            self.txt_y += 1
-            self.shadow_x += 4
-            self.shadow_y += 1
-            self.animating = True
-        else:
-            self.animating = False
-            self.txt_x = self.txt_x_d
-            self.txt_y  = self.txt_y_d
-            self.shadow_x = self.shadow_x_d
-            self.shadow_y = self.shadow_y_d
-
-
-
-class Imap(Button):
-    def __init__(self,filename, x, y, level, gap, blocked, total_enemies):
-        w = 60
-        h = 60
-        Button.__init__(self, filename, x, y)
-
-        self.level = level
-        self.blocked = blocked
-        self.gap = gap
-        self.total = total_enemies
-
-        self.map_name = ""
-        self.filename  = ""
-        self.bfilename = var.assetsDir + "icons8-lock-100.png"
-        self.lockpad = Sprite2(self.bfilename, x, y, int(w*0.5), int(h*0.5), 0, 0)
-
-    def get_map_name(self):
-        self.map_name = self.file.split("_", 1)[1]
-        self.map_name = self.map_name.split(".", 1)[0]
-        self.filename = var.assetsDir + "" + self.map_name + ".jpg"
-    #
-    # def highlight_icon(self):
-    #     s = pygame.Surface((self.rect.w, self.rect.h))
-    #     s.set_alpha(40)
-    #     s.fill((255, 255, 255))
-    #     var.gameDisplay.blit(s, (self.rect.x, self.rect.y))
-    #
-    def draw_block(self):
-        # var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
-        if self.blocked:
-            var.gameDisplay.blit(self.lockpad.image, (self.rect.x, self.rect.y))

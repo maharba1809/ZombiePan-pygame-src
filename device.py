@@ -19,7 +19,7 @@ class AddSound(AddWin):
         pygame.init()
         assetsDir = var.assetsDir
         if not os.path.isfile(assetsDir + 'comical_liquid_gel_splat.ogg'):
-            print('ERROR No Sound exist in ',os.getcwd(),assetsDir + 'comical_liquid_gel_splat.ogg')
+            print('ERROR No Sound exist in ', assetsDir + 'comical_liquid_gel_splat.ogg')
         else:
             print('file exists')
         self.sound_col = pygame.mixer.Sound(file=assetsDir + 'comical_liquid_gel_splat.ogg')
@@ -37,8 +37,9 @@ class AddSound(AddWin):
         self.sound_bullet.set_volume(0.5)
         self.music_enabled = True
         self.sound_enabled = True
-        self.music_theme = var.assetsDir + 'Little Swans Game.ogg'
+        self.music_theme = var.assetsDir + ""
         self.sound_attack = pygame.mixer.Sound(file=assetsDir + 'Zombie Gets Attacked-SoundBible.com-20348330.wav')
+        self.sound_glass_break = pygame.mixer.Sound(file=assetsDir + 'sounds/338692__natemarler__glass-break-small_short.wav')
         print('sound created')
 
 
@@ -46,14 +47,13 @@ class AddSound(AddWin):
 
         if self.music_enabled:
             print('device:music enabled')
-            if not pygame.mixer.music.get_busy():
-
+            if pygame.mixer.music.get_busy():
                 pygame.mixer.stop()
-                pygame.mixer.music.load(self.music_theme)
-                pygame.mixer.music.play(-1)
-                pygame.mixer.music.set_volume(0.5)
-            else:
-                print('device:  music is busy')
+
+            pygame.mixer.music.load(self.music_theme)
+            pygame.mixer.music.play(-1)
+            pygame.mixer.music.set_volume(0.5)
+
         else:
             print('device:music disabled')
             pygame.mixer.music.pause()
@@ -79,6 +79,8 @@ class Ranking():
         self.maps = []
         self.default_bullets_avaiable = 100
         self.bullet_available = self.default_bullets_avaiable
+        self.dead_player = False
+
 
     def add_damage(self, damage_rate):
 
@@ -97,8 +99,9 @@ class Ranking():
             self.life = 100
 
     def end_level(self):
-        if self.life <= 0:
-            print('End Level', round(self.damage,1), int(self.life))
+        if self.dead_player:
+            print('End Level', round(self.damage, 1), int(self.life))
+            self.dead_player = False #to start gaing as a alive player
             return True
 
         if self.killed == self.total:

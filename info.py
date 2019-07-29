@@ -16,6 +16,7 @@ class AddScreen(gen.Xscreen):
         self.background_file = var.assetsDir + 'maps_board.jpg'
         self.buy_file = var.assetsDir + 'buy_yes.png'
         print('info screen created')
+        # self.font = pygame.font.Font("assets/fonts/horrendo.ttf", 20)
 
     def run(self):
 

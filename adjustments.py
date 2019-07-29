@@ -29,6 +29,9 @@ class AddScreen(gen.Xscreen):
         self.music_txt = "Music/Musik/Musica"
         self.sound_txt = "Sounds/Klänge/Sonidos"
         print('Adjustments screen created')
+        self.font_size = 40
+        self.font = pygame.font.Font("assets/fonts/horrendo.ttf", self.font_size)
+        self.text_info_y = df.display_height*0.9
 
 
     def run(self):
@@ -38,16 +41,16 @@ class AddScreen(gen.Xscreen):
         btn = []
 
         if device.audio.music_enabled:
-            btn.append(sp.Sprite2(self.enable_file, 500, 100, 50, 50, 0, 0))
+            btn.append(sp.Sprite2(self.enable_file, df.display_width*0.7, 200, 50, 50, 0, 0))
         else:
-            btn.append(sp.Sprite2(self.disable_file, 500, 100, 50, 50, 0, 0))
+            btn.append(sp.Sprite2(self.disable_file,  df.display_width*0.7, 200, 50, 50, 0, 0))
 
         if device.audio.sound_enabled:
-            btn.append(sp.Sprite2(self.enable_file, 500, 200, 50, 50, 0, 0))
+            btn.append(sp.Sprite2(self.enable_file,  df.display_width*0.7, 300, 50, 50, 0, 0))
         else:
-            btn.append(sp.Sprite2(self.disable_file, 500, 200, 50, 50, 0, 0))
+            btn.append(sp.Sprite2(self.disable_file,  df.display_width*0.7, 300, 50, 50, 0, 0))
 
-        btn.append(sp.Sprite2(self.buy_file, 50, 480, 60, 60, 0, 0))
+        btn.append(sp.Sprite2(self.buy_file,  df.display_width*0.5,  df.display_height*0.7, 100, 100, 0, 0))
 
         while not self.stopEngine:
             for event in pygame.event.get():
@@ -69,56 +72,60 @@ class AddScreen(gen.Xscreen):
                     s.fill((255, 255, 255))
                     var.gameDisplay.blit(s, (m.rect.x, m.rect.y))
                     if re.search("yes", m.file, flags=0):
-                        self.draw_selected((0, 550), (df.display_width, 20), 100, df.white)
-                        self.message_display(self.back_txt, "monospace", 20, (50, 550), df.green)
+                        self.draw_selected((0, self.text_info_y), (df.display_width, self.font_size), 100, df.white)
+                        self.message_display(self.back_txt, "monospace", 20, (df.display_height*0.4, self.text_info_y), df.black)
 
                         if pygame.mouse.get_pressed()[0]:
                             self.stopEngine = True
                             # self.menuExit = False
 
             if btn[0].rect.collidepoint(pygame.mouse.get_pos()) == 1:
-                self.draw_selected((0, 550), (df.display_width, 20), 100, df.white)
+                self.draw_selected((0, self.text_info_y), (df.display_width, self.font_size), 100, df.white)
                 if device.audio.music_enabled:
-                    self.message_display(self.music_enable_txt , "monospace", 20, (100, 550), df.green)
+                    self.message_display(self.music_enable_txt , "monospace", 20, (100, self.text_info_y), df.black)
                 else:
-                    self.message_display(self.music_disable_txt, "monospace", 20, (100, 550), df.red)
+                    self.message_display(self.music_disable_txt, "monospace", 20, (100, self.text_info_y), df.black)
 
                 if pygame.mouse.get_pressed()[0]:
                     if device.audio.music_enabled:
                         device.audio.music_enabled = False
-                        btn.append(sp.Sprite2(self.disable_file, 500, 100, 50, 50, 0, 0))
+                        # btn.append(sp.Sprite2(self.disable_file, 500, 100, 50, 50, 0, 0))
+                        btn.append(sp.Sprite2(self.disable_file, df.display_width * 0.7, 200, 50, 50, 0, 0))
                         print('adj:music disabled')
 
                     else:
                         device.audio.music_enabled = True
-                        btn.append(sp.Sprite2(self.enable_file, 500, 100, 50, 50, 0, 0))
+                        # btn.append(sp.Sprite2(self.enable_file, 500, 100, 50, 50, 0, 0))
+                        btn.append(sp.Sprite2(self.enable_file, df.display_width * 0.7, 200, 50, 50, 0, 0))
                         print('adj:music enabled')
 
                     time.sleep(0.5)
                     device.audio.play_music()
             if btn[1].rect.collidepoint(pygame.mouse.get_pos()) == 1:
-                self.draw_selected((0, 550), (df.display_width, 20), 100, df.white)
+                self.draw_selected((0, self.text_info_y), (df.display_width, self.font_size), 100, df.white)
                 if device.audio.sound_enabled:
-                    self.message_display(self.sound_enable_txt, "monospace", 20, (100, 550), df.green)
+                    self.message_display(self.sound_enable_txt, "monospace", 20, (100, self.text_info_y), df.black)
                 else:
-                    self.message_display(self.sound_disable_txt, "monospace", 20, (100, 550), df.red)
+                    self.message_display(self.sound_disable_txt, "monospace", 20, (100, self.text_info_y), df.black)
 
                 if pygame.mouse.get_pressed()[0]:
                     if device.audio.sound_enabled:
                         device.audio.sound_enabled = False
-                        btn.append(sp.Sprite2(self.disable_file, 500, 200, 50, 50, 0, 0))
+                        # btn.append(sp.Sprite2(self.disable_file, 500, 200, 50, 50, 0, 0))
+                        btn.append(sp.Sprite2(self.disable_file, df.display_width * 0.7, 300, 50, 50, 0, 0))
                         print('adj:sound disabled')
                     else:
                         device.audio.sound_enabled = True
-                        btn.append(sp.Sprite2(self.enable_file, 500, 200, 50, 50, 0, 0))
+                        # btn.append(sp.Sprite2(self.enable_file, 500, 200, 50, 50, 0, 0))
+                        btn.append(sp.Sprite2(self.enable_file, df.display_width * 0.7, 300, 50, 50, 0, 0))
                         print('adj:sound enabled')
 
                     time.sleep(0.5)
                     device.audio.play_music()
 
-            self.message_display(self.opt_txt, "monospace", 40, (50, 0), df.orange)
-            self.message_display(self.music_txt, "monospace", 30, (50, 100), df.white)
-            self.message_display(self.sound_txt, "monospace", 30, (50, 200), df.white)
+            self.message_display(self.opt_txt, "monospace", 40, (50, 100), df.black)
+            self.message_display(self.music_txt, "monospace", 30, (50, 200), df.white)
+            self.message_display(self.sound_txt, "monospace", 30, (50, 300), df.white)
 
             pygame.display.update()
             var.clock.tick(20)

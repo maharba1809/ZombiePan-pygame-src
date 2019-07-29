@@ -9,15 +9,16 @@ import var
 import play
 import imp
 import device
+import buttons as btns
 
 print('Loading map')
 
 class AddScreen(gen.Xscreen):
     def __init__(self):
         gen.Xscreen.__init__(self)
-        self.background_file = var.assetsDir + 'maps_board.jpg'
+        self.background_file = var.assetsDir + 'backgrounds/maps_table.jpg'
         self.buy_file = var.assetsDir + 'buy_yes.png'
-        self.background_file = var.assetsDir + 'maps_board.jpg'
+        # self.background_file = var.assetsDir + 'maps_board.jpg'
 
 
         self.map1_file = var.assetsDir + 'icon_map1.png'
@@ -45,20 +46,20 @@ class AddScreen(gen.Xscreen):
         mapsback = sp.Sprite2(self.background_file, 0, 0, df.display_width, df.display_height, 0, 0)
         if not len(device.stats.maps)>0:
             maps = []
-            maps.append(sp.Imap(self.map1_file, df.display_width*0.2, 50, 1, 20, False, 10 ))
-            maps.append(sp.Imap(self.map2_file, df.display_width*0.4, 50, 2, 20, True, 10 ))
-            maps.append(sp.Imap(self.map3_file, df.display_width*0.6, 50, 3, 20, True, 12 ))
-            maps.append(sp.Imap(self.map4_file, df.display_width*0.8, 50, 4, 20, True, 12 ))
-            maps.append(sp.Imap(self.map5_file, df.display_width*0.2, 200, 5, 20, True, 13 ))
-            maps.append(sp.Imap(self.map6_file, df.display_width*0.4, 200, 6, 20, True, 14 ))
-            maps.append(sp.Imap(self.map7_file, df.display_width*0.6, 200, 7, 20, True, 15 ))
-            maps.append(sp.Imap(self.map8_file, df.display_width*0.8, 200, 8, 20, True, 16 ))
-            maps.append(sp.Imap(self.map9_file, df.display_width*0.2, 350, 9, 20, True, 17 ))
-            maps.append(sp.Imap(self.map10_file, df.display_width*0.4, 350, 10, 20, True, 18 ))
-            maps.append(sp.Imap(self.map11_file, df.display_width*0.6, 350, 11, 20, True, 19 ))
-            maps.append(sp.Imap(self.map12_file, df.display_width*0.8, 350, 12, 20, True, 20 ))
-            maps.append(sp.Imap(self.map13_file, df.display_width*0.2, 500, 13, 20, True, 21 ))
-            maps.append(sp.Imap(self.map14_file, df.display_width*0.4, 500, 14, 20, True, 22 ))
+            maps.append(btns.Imap(self.map1_file, df.display_width*0.2, 50, 1, 20, False, 10 ))
+            maps.append(btns.Imap(self.map2_file, df.display_width*0.4, 50, 2, 20, True, 10 ))
+            maps.append(btns.Imap(self.map3_file, df.display_width*0.6, 50, 3, 20, True, 12 ))
+            maps.append(btns.Imap(self.map4_file, df.display_width*0.8, 50, 4, 20, True, 12 ))
+            maps.append(btns.Imap(self.map5_file, df.display_width*0.2, 200, 5, 20, True, 13 ))
+            maps.append(btns.Imap(self.map6_file, df.display_width*0.4, 200, 6, 20, True, 14 ))
+            maps.append(btns.Imap(self.map7_file, df.display_width*0.6, 200, 7, 20, True, 15 ))
+            maps.append(btns.Imap(self.map8_file, df.display_width*0.8, 200, 8, 20, True, 16 ))
+            maps.append(btns.Imap(self.map9_file, df.display_width*0.2, 350, 9, 20, True, 17 ))
+            maps.append(btns.Imap(self.map10_file, df.display_width*0.4, 350, 10, 20, True, 18 ))
+            maps.append(btns.Imap(self.map11_file, df.display_width*0.6, 350, 11, 20, True, 19 ))
+            maps.append(btns.Imap(self.map12_file, df.display_width*0.8, 350, 12, 20, True, 20 ))
+            maps.append(btns.Imap(self.map13_file, df.display_width*0.2, 500, 13, 20, True, 21 ))
+            maps.append(btns.Imap(self.map14_file, df.display_width*0.4, 500, 14, 20, True, 22 ))
             # maps.append(sp.Imap(self.map14_file, 300, 350, 14, 20, False, 1))
             for m in maps:
                 m.hover_text = m.file
@@ -67,7 +68,7 @@ class AddScreen(gen.Xscreen):
 
         else:
             maps = device.stats.maps
-        button_back = sp.Button(self.exit_file, df.display_width*0.5, df.display_height*0.8)
+        button_back = btns.Button(self.exit_file, df.display_width*0.5, df.display_height*0.8)
 
         total_time = 0
         while not self.stopEngine:
@@ -93,7 +94,7 @@ class AddScreen(gen.Xscreen):
                 if m.onClick(pygame.mouse):
 
                     device.stats.level = m.level
-                    m.get_map_name()
+                    m.set_map()
                     device.stats.map_name = m.filename
 
                     if not m.blocked:

@@ -12,11 +12,12 @@ class AddScreen(gen.Xscreen):
     def __init__(self):
         gen.Xscreen.__init__(self)
         print('final screen created')
+        self.font = pygame.font.Font("assets/fonts/horrendo.ttf", 40)
 
 
     def run(self):
 
-        background = sp.Sprite2(var.assetsDir + 'end.jpg', 0, 0, df.display_width, df.display_height, 0, 0)
+        background = sp.Sprite2(var.assetsDir + 'backgrounds/end.jpg', 0, 0, df.display_width, df.display_height, 0, 0)
         total_time = 0
 
         horde = zmb.Horde()
@@ -48,7 +49,7 @@ class AddScreen(gen.Xscreen):
 
 
             self.draw_selected((0, 20), (df.display_width, 40), 100, df.white)
-            self.message_display('Thanks.. Danke... Gracias', "monospace", 40, (35, 20), df.blue)
+            self.message_display('Thanks.. Danke... Gracias', "monospace", 40, (35, 20), df.red)
             dt = pygame.time.get_ticks() - time_start
             total_time += dt
             pygame.display.update()

@@ -13,12 +13,12 @@ class AddScreen(gen.Xscreen):
     def __init__(self):
         gen.Xscreen.__init__(self)
         self.stopPlay = False
-
-
+        self.font = pygame.font.Font("assets/fonts/horrendo.ttf", 40)
+        self.background_file = var.assetsDir + 'backgrounds/maps_table.jpg'
     def run(self):
 
 
-        mapsback = sp.Sprite2(var.assetsDir + 'maps_board.jpg', 0, 0, df.display_width, df.display_height, 0, 0)
+        mapsback = sp.Sprite2(self.background_file, 0, 0, df.display_width, df.display_height, 0, 0)
         btns = []
         btns.append(
             sp.Sprite2(var.assetsDir + "Button_play.png", df.display_width * 0.5 - 100, df.display_height * 0.5 - 100, 80, 80,
@@ -46,19 +46,19 @@ class AddScreen(gen.Xscreen):
             for m in btns:
                 self.draw_sprite2(m)
 
-                if (m.rect.collidepoint(pygame.mouse.get_pos()) == 1):
 
-                    self.draw_selected((m.rect.x + m.rect.w + 10, m.rect.y + m.rect.h * 0.5 - 10), (df.display_width, 30),
-                                  100, df.white)
-                    if re.search("play", m.file, flags=0):
-                        self.message_display("Play", "monospace", 30,
-                                        (m.rect.x + m.rect.w + 10, m.rect.y + m.rect.h * 0.5 - 10), df.black)
-                    if re.search("menu", m.file, flags=0):
-                        self.message_display("Maps", "monospace", 30,
-                                        (m.rect.x + m.rect.w + 10, m.rect.y + m.rect.h * 0.5 - 10), df.black)
-                    if re.search("cancel", m.file, flags=0):
-                        self.message_display("Exit Game", "monospace", 30,
-                                        (m.rect.x + m.rect.w + 10, m.rect.y + m.rect.h * 0.5 - 10), df.black)
+                # self.draw_selected((m.rect.x + m.rect.w + 10, m.rect.y + m.rect.h * 0.5 - 10), (df.display_width, 30),
+                #               100, df.white)
+                if re.search("play", m.file, flags=0):
+                    self.message_display("Play", "monospace", 30,
+                                    (m.rect.x + m.rect.w + 10, m.rect.y + m.rect.h * 0.5 - 10), df.green)
+                if re.search("menu", m.file, flags=0):
+                    self.message_display("Maps", "monospace", 30,
+                                    (m.rect.x + m.rect.w + 10, m.rect.y + m.rect.h * 0.5 - 10), df.blue)
+                if re.search("cancel", m.file, flags=0):
+                    self.message_display("Exit Game", "monospace", 30,
+                                    (m.rect.x + m.rect.w + 10, m.rect.y + m.rect.h * 0.5 - 10), df.red)
+                if (m.rect.collidepoint(pygame.mouse.get_pos()) == 1):
 
                     if pygame.mouse.get_pressed()[0]:
                         if re.search("play", m.file, flags=0):
