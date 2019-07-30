@@ -1,3 +1,4 @@
+print('Loading sprite')
 import pygame
 import os
 import defaults as df

@@ -1,4 +1,4 @@
-
+print('Loading Info')
 import sprites as sp
 import defaults as df
 import pygame
@@ -8,7 +8,7 @@ import generic as gen
 import var
 import device
 
-print('Loading Info')
+
 
 class AddScreen(gen.Xscreen):
     def __init__(self):

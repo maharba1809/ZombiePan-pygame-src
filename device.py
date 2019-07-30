@@ -1,11 +1,12 @@
+print('Loading Sound and Video')
 import pygame
 import var
 import datetime
 import defaults as df
 import os
-print('Loading Sound and Video')
-version = '1.1.6'
 
+version = '117'
+print('version:',version)
 class AddWin():
     def _init_(self):
         pygame.init()

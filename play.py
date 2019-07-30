@@ -180,7 +180,7 @@ class AddScreen(gen.Xscreen):
             # print('control time:', pygame.time.get_ticks() - time_start)
 
             # var.clock.tick(var.fps)
-            # var.clock.tick(var.fps)
+            var.clock.tick(var.fps)
 
             # print('2',pygame.time.get_ticks() - time_start)
             self.draw_selected((0, 0), (df.display_width, 30), 80, df.white)

@@ -8,10 +8,10 @@ class Xscreen():
     def __init__(self):
         self.stopEngine = False
         print('generic screen created')
-        self.font_type = 'comicsansms'
+        self.font_type = 'monospace'
         self.font_size = 20
         self.font = pygame.font.SysFont(self.font_type, self.font_size)
-
+        print('font:', self.font_type)
     def draw_sprite2(self, sprite):
         var.gameDisplay.blit(sprite.image, (sprite.rect.x, sprite.rect.y))
 

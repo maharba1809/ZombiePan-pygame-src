@@ -1,4 +1,4 @@
-
+print('loading Adjustments')
 import sprites as sp
 import defaults as df
 import pygame
@@ -7,7 +7,7 @@ import time
 import generic as gen
 import var
 import device
-print('loading Adjustments')
+
 
 class AddScreen(gen.Xscreen):
     def __init__(self):

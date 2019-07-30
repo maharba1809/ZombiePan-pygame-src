@@ -1,4 +1,4 @@
-
+print('Loading map')
 import sprites as sp
 import defaults as df
 import pygame
@@ -11,7 +11,7 @@ import imp
 import device
 import buttons as btns
 
-print('Loading map')
+
 
 class AddScreen(gen.Xscreen):
     def __init__(self):

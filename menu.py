@@ -1,4 +1,4 @@
-
+print('Loading menu')
 import os
 script_path = os.path.dirname(os.path.realpath( __file__ ))
 print('wd',script_path)
@@ -18,7 +18,7 @@ import imp
 import device
 import buttons as btns
 
-print('Loading Menu')
+
 class AddScreen(gen.Xscreen):
     def __init__(self):
          gen.Xscreen.__init__(self)

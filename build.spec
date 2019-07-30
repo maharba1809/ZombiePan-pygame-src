@@ -4,12 +4,10 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['/home/maxwell/code/ZombienPan-pygame-src'],
+             pathex=[],
              binaries=[],
-             datas=[('assets','assets'),
-		('zombie_pan.desktop','.')	
-	     ],
-             hiddenimports=[],
+             datas=[('assets','assets') ],
+             hiddenimports=['pygame/pkgdata.py'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
