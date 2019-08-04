@@ -13,7 +13,7 @@ import pause
 import imp
 import datetime
 import zombies as zmb
-
+import text as txg
 
 
 class AddScreen(gen.Xscreen):
@@ -22,9 +22,21 @@ class AddScreen(gen.Xscreen):
         self.map = map
         device.audio.music_theme = var.assetsDir + 'sounds/Little Swans Game.ogg'
         device.audio.play_music()
-        self.font = pygame.font.Font("assets/fonts/stocky.ttf", 25)
+        # self.font = pygame.font.Font("assets/fonts/stocky.ttf", 25)
         # self.font = pygame.font.Font("assets/fonts/horrendo.ttf", 20)
+        self.zombie_txt_pos = (0,0)
+        self.exp_txt_pos = (df.display_width*0.2, 0)
+        self.life_txt_pos = (df.display_width*0.3, 0)
+        self.map_txt_pos = (df.display_width*0.5, 0)
+        self.time_txt_pos = (df.display_width*0.6, 0)
+        self.bullet_txt_pos = (df.display_width*0.8, 0)
+        self.display_text_pos = (df.display_width * 0.5 - 100, df.display_height * 0.5 + 50)
 
+        self.font1 = txg.TextGame()
+        self.font1.font_size = 30
+        self.font1.color = df.violet
+        # self.font1.path = "assets/fonts/OpenSans-Light.ttf"
+        self.font1.set_font()
 
     def run(self):
         imp.reload(sp)
@@ -146,14 +158,13 @@ class AddScreen(gen.Xscreen):
             # print('Horde check time:',pygame.time.get_ticks() - time_start)
             if device.stats.end_level():
                 self.stopEngine = True
-                self.draw_selected((0, df.display_height * 0.5 + 50), (df.display_width, 30), 100, df.white)
+                # self.draw_selected((0, df.display_height * 0.5 + 50), (df.display_width, 30), 100, df.white)
                 if device.stats.damage !=0:
                     display_text = 'Damage:' + str(int(device.stats.damage))+ '% :('
 
                 else:
                     display_text = 'Perfect!:)'
-                self.message_display(display_text, "monospace", 30,
-                                (df.display_width * 0.5 - 100, df.display_height * 0.5 + 50), df.violet)
+                self.message_display(display_text, self.display_text_pos)
 
                 if device.stats.life > 0:
                     self.draw_sprite2(info_winer)
@@ -178,24 +189,29 @@ class AddScreen(gen.Xscreen):
                     device.stats.winner = False
                 #check point
             # print('control time:', pygame.time.get_ticks() - time_start)
-
-            # var.clock.tick(var.fps)
-            var.clock.tick(var.fps)
-
-            # print('2',pygame.time.get_ticks() - time_start)
-            self.draw_selected((0, 0), (df.display_width, 30), 80, df.white)
-            self.message_display('Enemies:' + str(device.stats.total - device.stats.killed), "monospace", 25, (df.display_width*0.0, 0),
-                                 df.orange)
-            self.message_display('Exp:' + str(int(device.stats.experience)), "monospace", 25, (df.display_width*0.2, 0), df.violet)
-            self.message_display('Life:' + str(int(device.stats.life)) + "%", "monospace", 25, (df.display_width*0.3, 0), df.orange)
-            self.message_display('Map:' + str(device.stats.level), "monospace", 25, (df.display_width*0.5, 0), df.orange)
-            self.message_display('Time:' + str(round(total_time, 1)), "monospace", 25, (df.display_width*0.6, 0), df.red)
-            self.message_display('Bullets:' + str(weapon.bullet_available), "monospace", 25, (df.display_width*0.8, 0), df.violet)
-
+            self.sent_msg(weapon, total_time)
             pygame.display.update()
             # print('1',pygame.time.get_ticks() - time_start)
             dt = pygame.time.get_ticks() - time_start
             # print('end loop',total_time, dt, time_start, pygame.time.get_ticks())
             # print('loop time:', pygame.time.get_ticks() - time_start)
             total_time += dt
+
+    def sent_msg(self, weapon,total_time):
+        self.draw_selected((0, 0), (df.display_width, 40), 90, df.white)
+        self.font1.color = df.green
+        self.message_display('Zombies:' + str(device.stats.total - device.stats.killed),  self.zombie_txt_pos)
+        self.font1.color = df.blue
+        self.message_display('Exp:' + str(int(device.stats.experience)), self.exp_txt_pos)
+        self.font1.color = df.white
+        self.message_display('Life:' + str(int(device.stats.life)) + "%", self.life_txt_pos)
+        self.font1.color = df.orange
+        self.message_display('Map:' + str(device.stats.level),self.map_txt_pos)
+        self.font1.color = df.gold
+        self.message_display('Time:' + str(round(total_time, 1)), self.time_txt_pos)
+        self.font1.color = df.black
+        self.message_display('Bullets:' + str(weapon.bullet_available), self.bullet_txt_pos)
+        self.font1.color = df.red
+
+
 

@@ -116,8 +116,10 @@ class AddBullet(Sprite2):
         w = 12
         h = 18
         u = 0
-        v = 15
+        v = 10
         Sprite2.__init__(self,self.image_file,x,y, w, h, u, v)
+        self.loop_index = 0
+        self.fps = 0
 
         # newbullet = self.Sprite2(var.assetsDir + 'bullet1.png', xb, yb, 12, 18, hel.u, 9)
 
@@ -130,6 +132,8 @@ class Weapon():
         self.uinert = 0
         self.bullet_available = 0
         # self.shoot_count = 0
+        self.loop_index = 0
+        self.fps = 2
 
     def shoot_bullet(self):
         if  self.bullet_available>0:
@@ -155,20 +159,27 @@ class Weapon():
         # print(len(self.magazine))
         if len(self.magazine)>0:
             # print(self.magazine)
-
+            
             for bullet in self.magazine:
-                # print(bullet.rect.x, bullet.u)
-                # bullet.u = self.uinert
-                bullet.rect.x += bullet.u
-                bullet.rect.y += bullet.v
-
+                if bullet.loop_index > bullet.fps:
+                    # print(bullet.rect.x, bullet.u)
+                    # bullet.u = self.uinert
+                    bullet.rect.x += bullet.u
+                    bullet.rect.y += bullet.v
+                    bullet.loop_index = 0
+                else:
+                    bullet.loop_index += 1                    
+                
                 if bullet.rect.y > df.display_height:
                     # del bullet1
                     self.magazine.remove(bullet)
-                else:
-                    var.gameDisplay.blit(bullet.image, (bullet.rect.x, bullet.rect.y))
-
-
+                    continue
+                var.gameDisplay.blit(bullet.image, (bullet.rect.x, bullet.rect.y))
+        
+            
+                
+                
+        
 class Asprite(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -200,6 +211,8 @@ class Asprite(pygame.sprite.Sprite):
         self.rect.w = 0
         self.rect.h = 0
         self.sound = device.audio.sound_hel
+        self.loop_index = 0
+        self.fps = 0
 
 
     def load_images(self):
@@ -214,32 +227,36 @@ class Asprite(pygame.sprite.Sprite):
 
 
     def animate(self):
-        if self.alive:  # lived animation - Run
-            if self.files_run:
-                if self.index < len(self.files_run):
-                    self.image = self.imagesRun[self.index]
-                    self.index += 1
-                else:
+        if self.loop_index > self.fps:
+            if self.alive:  # lived animation - Run
+                if self.files_run:                
+                    if self.index < len(self.files_run):
+                        self.image = self.imagesRun[self.index]
+                        self.index += 1
+                    else:
+                        self.index = 0
+                    if self.rect.w != self.fileSizeRun[0]:self.rect.w = self.fileSizeRun[0]
+                    if self.rect.h != self.fileSizeRun[1]:self.rect.h = self.fileSizeRun[1]
+
+            else:
+                if self.u!=0:
                     self.index = 0
-                if self.rect.w != self.fileSizeRun[0]:self.rect.w = self.fileSizeRun[0]
-                if self.rect.h != self.fileSizeRun[1]:self.rect.h = self.fileSizeRun[1]
+                    self.u = 0
+                # print(self.files_dead,len(self.files_dead),self.index,'index')
+                if self.files_dead:
+                    if self.index < len(self.files_dead):
+                        self.image = self.imagesDead[self.index]
+                        self.index += 1
+                    # else:
+                    #     self.index = 0
+                    #     self.col = True
 
+                    if self.rect.w != self.fileSizeDead[0]: self.rect.w = self.fileSizeDead[0]
+                    if self.rect.h != self.fileSizeDead[0]: self.rect.h = self.fileSizeDead[1]
+            self.move()
+            self.loop_index = 0
         else:
-            if self.u!=0:
-                self.index = 0
-                self.u = 0
-            # print(self.files_dead,len(self.files_dead),self.index,'index')
-            if self.files_dead:
-                if self.index < len(self.files_dead):
-                    self.image = self.imagesDead[self.index]
-                    self.index += 1
-                # else:
-                #     self.index = 0
-                #     self.col = True
-
-                if self.rect.w != self.fileSizeDead[0]: self.rect.w = self.fileSizeDead[0]
-                if self.rect.h != self.fileSizeDead[0]: self.rect.h = self.fileSizeDead[1]
-        self.move()
+            self.loop_index += 1
         self.draw()
 
     def move(self):

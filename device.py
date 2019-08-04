@@ -5,7 +5,7 @@ import datetime
 import defaults as df
 import os
 
-version = '117'
+version = df.version
 print('version:',version)
 class AddWin():
     def _init_(self):

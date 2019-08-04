@@ -40,6 +40,8 @@ class Enemy(pygame.sprite.Sprite):
         self.dead = False
         self.life = 100
         self.dead_rate = 50
+        self.loop_index = 0
+        self.fps = 2
 
     def load_images(self):
         print('\n')
@@ -95,8 +97,8 @@ class Enemy(pygame.sprite.Sprite):
             self.hit = False
             self.running = True
             # print('under attacking!')
-            if device.audio.sound_enabled:
-                device.audio.sound_attack.play()
+            #if device.audio.sound_enabled:
+            device.audio.sound_attack.play()
             device.stats.add_damage(self.damage_rate)
 
 
@@ -135,20 +137,37 @@ class Enemy(pygame.sprite.Sprite):
 
     def animate(self):
         if self.alive:  # lived animation - Run
-
+            
             if self.running:
-                self.animate_run()
+                if self.loop_index > self.fps:
+                    self.animate_run()
+                    self.loop_index = 0
+                else:
+                    self.loop_index += 1
+                
                 self.move()
 
             if self.preattack:
-                self.animate_preattack()
+                if self.loop_index > self.fps:
+                    self.animate_preattack()
+                    self.loop_index = 0
+                else:
+                    self.loop_index += 1
 
             if self.hit:
-                self.animate_hit()
-
+                #if self.loop_index > self.fps:
+                    self.animate_hit()
+                    #self.loop_index = 0
+                #else:
+                    #self.loop_index += 4
+            
         else:
-            self.animate_death()
-
+            if self.loop_index > self.fps:
+                self.animate_death()
+                self.loop_index = 0
+            else:
+                self.loop_index += 1
+                
         var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
 
     def move(self):
@@ -251,10 +270,10 @@ class Horde():
                 enemy.u = 2.5
             elif random_enemy % 3 == 0:
                 enemy = ChildEnemy()
-                enemy.u = 4
+                enemy.u = 2
             elif random_enemy % 5 == 0:
                 enemy = PirateEnemy()
-                enemy.u = 3
+                enemy.u = 2.5
             else:
                 enemy = Enemy()
                 enemy.u = 2

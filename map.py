@@ -61,14 +61,15 @@ class AddScreen(gen.Xscreen):
             maps.append(btns.Imap(self.map13_file, df.display_width*0.2, 500, 13, 20, True, 21 ))
             maps.append(btns.Imap(self.map14_file, df.display_width*0.4, 500, 14, 20, True, 22 ))
             # maps.append(sp.Imap(self.map14_file, 300, 350, 14, 20, False, 1))
-            for m in maps:
-                m.hover_text = m.file
-                # m.rect.w = 50
+            # for m in maps:
+            #     m.hover_text = m.file
+            #     # m.rect.w = 50
                 # m.rect.h = 50
 
         else:
             maps = device.stats.maps
-        button_back = btns.Button(self.exit_file, df.display_width*0.5, df.display_height*0.8)
+        button_back = btns.Button(self.exit_file, df.display_width*0.5, df.display_height*0.8,100,100)
+        button_back.hover_text = 'Back / Zuruck / Atras'
 
         total_time = 0
         while not self.stopEngine:

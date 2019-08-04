@@ -7,23 +7,25 @@ import time
 import generic as gen
 import var
 import device
-
-
+import text as txg
+import buttons as btns
 
 class AddScreen(gen.Xscreen):
     def __init__(self):
         gen.Xscreen.__init__(self)
-        self.background_file = var.assetsDir + 'maps_board.jpg'
+        self.version = df.version
+        self.background_file = var.assetsDir + 'backgrounds/maps_table.jpg'
         self.buy_file = var.assetsDir + 'buy_yes.png'
         print('info screen created')
         # self.font = pygame.font.Font("assets/fonts/horrendo.ttf", 20)
-
+        self.font1.font_size = 30
+        self.font1.set_font()
     def run(self):
 
 
         mapsback = sp.Sprite2(self.background_file, 0, 0, df.display_width, df.display_height, 0, 0)
-        btn = []
-        btn.append(sp.Sprite2(self.buy_file, 100, 450, 90, 90, 0, 0))
+
+        exitBtn = btns.Button(self.buy_file, df.display_width * 0.5 - 50, df.display_height * 0.8, 100, 100)
 
         while not self.stopEngine:
             for event in pygame.event.get():
@@ -36,66 +38,63 @@ class AddScreen(gen.Xscreen):
             var.gameDisplay.fill(df.white)
             self.draw_sprite2(mapsback)
 
-            for m in btn:
-                self.draw_sprite2(m)
+            if exitBtn.onClick(pygame.mouse):
+                # if re.search("yes", exitBtn.file, flags=0):
+                    self.stopEngine = True
+                    time.sleep(1)
 
-                if (m.rect.collidepoint(pygame.mouse.get_pos()) == 1):
 
-                    s = pygame.Surface((m.rect.w, m.rect.h))
-                    s.set_alpha(50)
-                    s.fill((255, 255, 255))
-
-                    if re.search("yes", m.file, flags=0):
-                        self.draw_selected((0, 550), (df.display_width, 20), 100, df.white)
-                        self.message_display("Done/Geschafft/Hecho", "monospace", 20, (100, 550), (255, 69, 0))
-
-                    var.gameDisplay.blit(s, (m.rect.x, m.rect.y))
-
-                    if pygame.mouse.get_pressed()[0]:
-                        if re.search("yes", m.file, flags=0):
-                            self.stopEngine = True
-                            time.sleep(1)
             yt = 10
-            text = 'Zombie Pan beta 1.1.5 '
-            self.message_display(text, "monospace", 30, (50, yt), df.gray)
-            yt += 40
+            text = 'Zombie Pan beta'+ self.version
+            self.font1.color = df.green
+            self.message_display(text, (50, yt))
+
+            yt += 60
             text = 'Independent Video Game created and designed by nordik14@gmail.com'
-            self.message_display(text, "monospace", 20, (50, yt), df.gray)
-            yt += 20
+            self.font1.color = df.green
+            self.message_display(text, (50, yt))
+
+            yt += 60
             text = "Free distirbution of this product under GPL is allowed"
-            self.message_display(text, "monospace", 20, (50, yt), df.gray)
+            self.font1.color = df.orange
+            self.message_display(text, (50, yt))
+
             text = 'Free Assets obtained from GameArt2D:'
-            yt += 20
-            self.message_display(text, "monospace", 20, (50, yt), df.blue)
-            text = 'Free distibution'
-            yt += 20
-            self.message_display(text, "monospace", 20, (50, yt), df.blue)
-            text = 'Licenced distribution '
-            yt += 20
-            self.message_display(text, "monospace", 20, (50, yt), df.blue)
-            yt += 20
-            text = 'Original design'
-            self.message_display(text, "monospace", 20, (50, yt), df.blue)
-            yt += 20
+            self.font1.color = df.orange
+            yt += 60
+            self.message_display(text, (50, yt))
+
+            yt += 60
             text = 'Zombie Pan available in Google Playstore!'
-            self.message_display(text, "monospace", 20, (50, yt), df.green)
-            yt += 20
+            self.font1.color = df.blue
+            self.message_display(text, (50, yt))
+
+            yt += 50
             text = 'Other products: Brick Infest, Vozarron, Ñulingua aprende español '
-            self.message_display(text, "monospace", 15, (50, yt), df.green)
-            yt += 20
+            self.font1.color = df.white
+            self.message_display(text, (50, yt))
+
+            yt += 50
             # draw_selected( (0, 380), (display_width,80), yt, black, gameDisplay )
             text = 'Support this video game for future updates'
-            self.message_display(text, "monospace", 25, (50, yt), df.red)
-            yt += 50
+            self.font1.color = df.violet
+            self.message_display(text, (50, yt))
+
+            yt += 70
             text = 'unterstütze dieses Videospiel für zukünftige Updates'
-            self.message_display(text, "monospace", 25, (50, yt), df.red)
-            yt += 50
+            self.font1.color = df.gold
+            self.message_display(text, (50, yt))
+
+            yt += 70
             text = 'Apoya este Juego con Donaciones '
-            self.message_display(text, "monospace", 25, (50, yt), df.red)
-            yt += 50
-            self.draw_selected((0, yt), (df.display_width, 20), 100, df.gold)
+            self.font1.color = df.red
+            self.message_display(text, (50, yt))
+
+            yt += 70
+            self.draw_selected((0, yt), (df.display_width, 30), 40, df.red)
+            self.font1.color = df.red
             text = 'Feedback, donations: nordik14@gmail.com'
-            self.message_display(text, "monospace", 20, (50, yt), df.black)
+            self.message_display(text, (50, yt))
 
             pygame.display.update()
             var.clock.tick(20)

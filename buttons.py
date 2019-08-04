@@ -3,26 +3,26 @@ import defaults as df
 import var as var
 import pygame
 import time
+import text as txg
 
 class Button(sp.Sprite2):
 
-    def __init__(self, filename, x, y):
-        w = 100
-        h = 100
+    def __init__(self, filename, x, y, w, h):
+       
         sp.Sprite2.__init__(self, filename, x, y, w, h, 0, 0)
-        self.hover_text = 'Back /Zurück/Atras'
+        self.hover_text = 'Back / Zurück/ Atras'
         self.click_text = 'Loading/ Laden/ Caragando'
-        self.font =  "monospace"
-        self.font_size = 30
+        # self.font =  "monospace"
+        # self.font_size = 30
         self.txt_w = df.display_width
         self.txt_h = 30
-        self.txt_x = 100
+        self.txt_x = df.display_width*0.1
         self.txt_y = df.display_height - self.txt_h*2
         self.txt_color= df.gray
         self.hover_color = df.white
         self.click_color = df.red
         self.shadow_w = df.display_width
-        self.shadow_h = df.display_width
+        self.shadow_h = 50
         self.shadow_x = 0
         self.shadow_y = self.txt_y
         self.shadow_color = df.white
@@ -33,10 +33,18 @@ class Button(sp.Sprite2):
         self.animating = False
         self.txt_x_d = self.txt_x
         self.txt_y_d = self.txt_y
+
         self.shadow_x_d = self.shadow_x
         self.shadow_y_d = self.shadow_y
-        self.font_size = 50
-        self.font = pygame.font.Font("assets/fonts/horrendo.ttf", self.font_size)
+        self.shadow_color = df.white
+
+        self.font_btn = txg.TextGame()
+        self.font_btn.font_size = 50
+        self.font_btn.set_font()
+        self.font_btn.center = (self.txt_x, self.txt_y)
+        self.font_btn.color = df.white
+
+        # self.font = pygame.font.Font("assets/fonts/horrendo.ttf", self.font_size)
 
     def draw_sprite2(self):
         var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
@@ -53,22 +61,25 @@ class Button(sp.Sprite2):
 
 
     def new_shadow(self, color):
-        s = pygame.Surface((self.txt_w, self.font_size))
+        s = pygame.Surface((self.txt_w, self.shadow_h))
         s.set_alpha(50)
         s.fill(color)
         var.gameDisplay.blit(s, (self.shadow_x, self.shadow_y))
 
-    def new_msg(self, text, color1, color2):
-        self.new_shadow(color1)
+    def new_msg(self, text):
+        self.new_shadow(self.shadow_color)
+        self.font_btn.display_text(text)
         # myfont = pygame.font.SysFont(self.font, self.font_size)
-        label = self.font.render(text, 1, color2)
-        var.gameDisplay.blit(label, (self.txt_x, self.txt_y))
+        # label = self.font.render(text, 1, color2)
+        # var.gameDisplay.blit(label, (self.txt_x, self.txt_y))
+
 
     def onClick(self, mouse):
 
         if self.rect.collidepoint(mouse.get_pos()) == 1:
             self.highlight(self.hover_color)
-            self.new_msg(self.hover_text, self.hover_color, self.txt_color)
+
+            self.new_msg(self.hover_text)
             # self.highlighted = True
 
             if mouse.get_pressed()[0]:
@@ -95,11 +106,12 @@ class Button(sp.Sprite2):
         self.index +=1
         if self.index < self.max_frame:
             self.highlight(self.click_color)
-            self.new_msg(self.hover_text, self.click_color, self.click_color)
-            self.txt_x += 4
-            self.txt_y += 1
-            self.shadow_x += 4
-            self.shadow_y += 1
+            # self.new_msg('Nuevo', self.click_color, self.click_color)
+            # self.new_msg(self.hover_text, self.click_color, self.click_color)
+            self.txt_x += 100
+            #self.txt_y += 1
+            self.shadow_x += 100
+            #self.shadow_y += 1
             self.animating = True
         else:
             self.animating = False
@@ -111,9 +123,9 @@ class Button(sp.Sprite2):
 
 class Imap(Button):
     def __init__(self,filename, x, y, level, gap, blocked, total_enemies):
-        w = 60
-        h = 60
-        Button.__init__(self, filename, x, y)
+        w = 100
+        h = 100
+        Button.__init__(self, filename, x, y, w, h)
 
         self.level = level
         self.blocked = blocked
@@ -123,6 +135,10 @@ class Imap(Button):
         self.filename  = ""
         self.bfilename = var.assetsDir + "icons8-lock-100.png"
         self.lockpad = sp.Sprite2(self.bfilename, x, y, int(w*0.5), int(h*0.5), 0, 0)
+        self.hover_text = 'Level ' + str(level) + '   /   ' + str(total_enemies) + ' Zombies'
+        self.font_btn.color = df.red
+
+
 
     def set_map(self):
         if self.level ==1 :
