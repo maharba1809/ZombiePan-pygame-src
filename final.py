@@ -12,7 +12,10 @@ class AddScreen(gen.Xscreen):
     def __init__(self):
         gen.Xscreen.__init__(self)
         print('final screen created')
-        self.font = pygame.font.Font("assets/fonts/horrendo.ttf", 40)
+        self.font1.color = df.orange
+        self.font1.font_size = 40
+        self.font1.set_font()
+
 
 
     def run(self):
@@ -48,8 +51,8 @@ class AddScreen(gen.Xscreen):
                 # print(enemy.rect.x)
 
 
-            self.draw_selected((0, 20), (df.display_width, 40), 100, df.white)
-            self.message_display('Thanks.. Danke... Gracias', "monospace", 40, (35, 20), df.red)
+            self.draw_selected((35,0), (df.display_width, 50), 100, df.white)
+            self.message_display('Thanks.. Danke... Gracias', (35, 20))
             dt = pygame.time.get_ticks() - time_start
             total_time += dt
             pygame.display.update()
