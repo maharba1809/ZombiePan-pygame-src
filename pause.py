@@ -33,7 +33,7 @@ class AddScreen(gen.Xscreen):
         self.button_can_path = var.assetsDir + "Button_cancel.png"
         self.button_can_x = df.display_width*0.4
         self.button_can_y = self.button_play_y + self.button_size
-        self.button_can_text = 'Cancel'
+        self.button_can_text = 'Exit game'
         self.can_text_pos = (self.button_can_x + self.button_size * 1.1, self.button_can_y*1.05)
 
 

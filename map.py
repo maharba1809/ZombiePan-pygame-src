@@ -16,50 +16,79 @@ import buttons as btns
 class AddScreen(gen.Xscreen):
     def __init__(self):
         gen.Xscreen.__init__(self)
-        self.background_file = var.assetsDir + 'backgrounds/maps_table.jpg'
+        self.background_file = var.assetsDir + 'backgrounds/maps.jpg'
         self.buy_file = var.assetsDir + 'buy_yes.png'
         # self.background_file = var.assetsDir + 'maps_board.jpg'
 
 
-        self.map1_file = var.assetsDir + 'icon_map1.png'
-        self.map2_file = var.assetsDir + 'icon_map2.png'
-        self.map3_file = var.assetsDir + 'icon_map3.png'
-        self.map4_file = var.assetsDir + 'icon_map4.png'
-        self.map5_file = var.assetsDir + 'icon_map5.png'
-        self.map6_file = var.assetsDir + 'icon_map6.png'
-        self.map7_file = var.assetsDir + 'icon_map7.png'
-        self.map8_file = var.assetsDir + 'icon_map8.png'
-        self.map9_file = var.assetsDir + 'icon_map9.png'
-        self.map10_file = var.assetsDir + 'icon_map10.png'
-        self.map11_file = var.assetsDir + 'icon_map11.png'
-        self.map12_file = var.assetsDir + 'icon_map12.png'
-        self.map13_file = var.assetsDir + 'icon_map13.png'
-        self.map14_file = var.assetsDir + 'icon_map14.png'
+        self.map1_file = var.assetsDir + 'icons/zombie_head.png'
+        self.map2_file = self.map1_file
+        self.map3_file = self.map1_file
+        self.map4_file = self.map1_file
+        self.map5_file = self.map1_file
+        self.map6_file = self.map1_file
+        self.map7_file = self.map1_file
+        self.map8_file = self.map1_file
+        self.map9_file = self.map1_file
+        self.map10_file = self.map1_file
+        self.map11_file = self.map1_file
+        self.map12_file = self.map1_file
+        self.map13_file =self.map1_file
+        self.map14_file = self.map1_file
         self.exit_file = var.assetsDir + 'Button_exit.png'
+
 
         print('map screen created')
 
 
     def run(self):
         print('running maps')
+        icon_map1_x = 0.8
+        icon_map1_y = 0.7
+        icon_map2_x = 0.8
+        icon_map2_y = 0.6
+        icon_map3_x = 0.7
+        icon_map3_y = 0.6
+        icon_map4_x = 0.7
+        icon_map4_y = 0.4
+        icon_map5_x = 0.85
+        icon_map5_y = 0.1
+        icon_map6_x = 0.7
+        icon_map6_y = 0.15
+        icon_map7_x = 0.6
+        icon_map7_y = 0.1
+        icon_map8_x = 0.15
+        icon_map8_y = 0.3
+        icon_map9_x = 0.4
+        icon_map9_y = 0.1
+        icon_map10_x = 0.3
+        icon_map10_y = 0.2
+        icon_map11_x = 0.1
+        icon_map11_y = 0.6
+        icon_map12_x = 0.2
+        icon_map12_y = 0.7
+        icon_map13_x = 0.3
+        icon_map13_y = 0.5
+        icon_map14_x = 0.35
+        icon_map14_y = 0.75
 
         mapsback = sp.Sprite2(self.background_file, 0, 0, df.display_width, df.display_height, 0, 0)
         if not len(device.stats.maps)>0:
             maps = []
-            maps.append(btns.Imap(self.map1_file, df.display_width*0.2, 50, 1, 20, False, 10 ))
-            maps.append(btns.Imap(self.map2_file, df.display_width*0.4, 50, 2, 20, True, 10 ))
-            maps.append(btns.Imap(self.map3_file, df.display_width*0.6, 50, 3, 20, True, 12 ))
-            maps.append(btns.Imap(self.map4_file, df.display_width*0.8, 50, 4, 20, True, 12 ))
-            maps.append(btns.Imap(self.map5_file, df.display_width*0.2, 200, 5, 20, True, 13 ))
-            maps.append(btns.Imap(self.map6_file, df.display_width*0.4, 200, 6, 20, True, 14 ))
-            maps.append(btns.Imap(self.map7_file, df.display_width*0.6, 200, 7, 20, True, 15 ))
-            maps.append(btns.Imap(self.map8_file, df.display_width*0.8, 200, 8, 20, True, 16 ))
-            maps.append(btns.Imap(self.map9_file, df.display_width*0.2, 350, 9, 20, True, 17 ))
-            maps.append(btns.Imap(self.map10_file, df.display_width*0.4, 350, 10, 20, True, 18 ))
-            maps.append(btns.Imap(self.map11_file, df.display_width*0.6, 350, 11, 20, True, 19 ))
-            maps.append(btns.Imap(self.map12_file, df.display_width*0.8, 350, 12, 20, True, 20 ))
-            maps.append(btns.Imap(self.map13_file, df.display_width*0.2, 500, 13, 20, True, 21 ))
-            maps.append(btns.Imap(self.map14_file, df.display_width*0.4, 500, 14, 20, True, 22 ))
+            maps.append(btns.Imap(self.map1_file, df.display_width*icon_map1_x, df.display_height*icon_map1_y, 1, 20, False, 10 ))
+            maps.append(btns.Imap(self.map2_file, df.display_width*icon_map2_x, df.display_height*icon_map2_y, 2, 20, True, 10 ))
+            maps.append(btns.Imap(self.map3_file, df.display_width*icon_map3_x, df.display_height*icon_map3_y, 3, 20, True, 12 ))
+            maps.append(btns.Imap(self.map4_file,df.display_width*icon_map4_x, df.display_height*icon_map4_y, 4, 20, True, 12 ))
+            maps.append(btns.Imap(self.map5_file, df.display_width*icon_map5_x, df.display_height*icon_map5_y, 5, 20, True, 13 ))
+            maps.append(btns.Imap(self.map6_file, df.display_width*icon_map6_x, df.display_height*icon_map6_y, 6, 20, True, 14 ))
+            maps.append(btns.Imap(self.map7_file, df.display_width*icon_map7_x, df.display_height*icon_map7_y, 7, 20, True, 15 ))
+            maps.append(btns.Imap(self.map8_file, df.display_width*icon_map8_x, df.display_height*icon_map8_y, 8, 20, True, 16 ))
+            maps.append(btns.Imap(self.map9_file, df.display_width*icon_map9_x, df.display_height*icon_map9_y, 9, 20, True, 17 ))
+            maps.append(btns.Imap(self.map10_file, df.display_width*icon_map10_x, df.display_height*icon_map10_y, 10, 20, True, 18 ))
+            maps.append(btns.Imap(self.map11_file, df.display_width*icon_map11_x, df.display_height*icon_map11_y, 11, 20, True, 19 ))
+            maps.append(btns.Imap(self.map12_file, df.display_width*icon_map12_x, df.display_height*icon_map12_y, 12, 20, True, 20 ))
+            maps.append(btns.Imap(self.map13_file, df.display_width*icon_map13_x, df.display_height*icon_map13_y, 13, 20, True, 21 ))
+            maps.append(btns.Imap(self.map14_file, df.display_width*icon_map14_x, df.display_height*icon_map14_y, 14, 20, True, 22 ))
             # maps.append(sp.Imap(self.map14_file, 300, 350, 14, 20, False, 1))
             # for m in maps:
             #     m.hover_text = m.file
@@ -68,7 +97,7 @@ class AddScreen(gen.Xscreen):
 
         else:
             maps = device.stats.maps
-        button_back = btns.Button(self.exit_file, df.display_width*0.5, df.display_height*0.8,100,100)
+        button_back = btns.Button(self.exit_file, df.display_width*0.5, df.display_height*0.8, 100, 100)
         button_back.hover_text = 'Back / Zuruck / Atras'
 
         total_time = 0
@@ -92,7 +121,12 @@ class AddScreen(gen.Xscreen):
                 self.stopEngine = True
 
             for m in maps:
+                if m.blocked:
+                    m.highlight(df.gold)
+                else:
+                    m.highlight(df.green)
                 if m.onClick(pygame.mouse):
+
 
                     device.stats.level = m.level
                     m.set_map()

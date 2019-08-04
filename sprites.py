@@ -212,7 +212,7 @@ class Asprite(pygame.sprite.Sprite):
         self.rect.h = 0
         self.sound = device.audio.sound_hel
         self.loop_index = 0
-        self.fps = 0
+        self.fps = 5
 
 
     def load_images(self):
@@ -227,23 +227,28 @@ class Asprite(pygame.sprite.Sprite):
 
 
     def animate(self):
-        if self.loop_index > self.fps:
-            if self.alive:  # lived animation - Run
-                if self.files_run:                
+
+        if self.alive:  # lived animation - Run
+            if self.loop_index > self.fps:
+                if self.files_run:
                     if self.index < len(self.files_run):
                         self.image = self.imagesRun[self.index]
                         self.index += 1
                     else:
                         self.index = 0
-                    if self.rect.w != self.fileSizeRun[0]:self.rect.w = self.fileSizeRun[0]
-                    if self.rect.h != self.fileSizeRun[1]:self.rect.h = self.fileSizeRun[1]
 
+                self.loop_index = 0
             else:
-                if self.u!=0:
-                    self.index = 0
-                    self.u = 0
-                # print(self.files_dead,len(self.files_dead),self.index,'index')
-                if self.files_dead:
+                self.loop_index += 1
+            if self.rect.w != self.fileSizeRun[0]: self.rect.w = self.fileSizeRun[0]
+            if self.rect.h != self.fileSizeRun[1]: self.rect.h = self.fileSizeRun[1]
+        else:
+            if self.u!=0:
+                self.index = 0
+                self.u = 0
+            # print(self.files_dead,len(self.files_dead),self.index,'index')
+            if self.files_dead:
+                if self.loop_index > self.fps:
                     if self.index < len(self.files_dead):
                         self.image = self.imagesDead[self.index]
                         self.index += 1
@@ -253,10 +258,11 @@ class Asprite(pygame.sprite.Sprite):
 
                     if self.rect.w != self.fileSizeDead[0]: self.rect.w = self.fileSizeDead[0]
                     if self.rect.h != self.fileSizeDead[0]: self.rect.h = self.fileSizeDead[1]
-            self.move()
-            self.loop_index = 0
-        else:
-            self.loop_index += 1
+                    self.loop_index = 0
+                else:
+                    self.loop_index += 1
+
+        self.move()
         self.draw()
 
     def move(self):
@@ -272,6 +278,18 @@ class Asprite(pygame.sprite.Sprite):
                 self.rect.x -= self.u
                 self.u = -self.u
                 if device.audio.sound_enabled: self.sound.play()
+
+        if self.rect.y + self.rect.h + 100 >= df.display_height:
+            if self.v > 0:
+                self.rect.y -= self.v
+
+                if device.audio.sound_enabled: self.sound.play()
+        if self.rect.y < 0:
+            if self.v < 0:
+                self.rect.y -= self.v
+                self.v = -self.v
+                if device.audio.sound_enabled: self.sound.play()
+
         self.rect.x += self.u
         self.rect.y += self.v
 

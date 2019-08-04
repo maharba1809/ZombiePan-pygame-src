@@ -123,8 +123,8 @@ class Button(sp.Sprite2):
 
 class Imap(Button):
     def __init__(self,filename, x, y, level, gap, blocked, total_enemies):
-        w = 100
-        h = 100
+        w = 50
+        h = 50
         Button.__init__(self, filename, x, y, w, h)
 
         self.level = level
@@ -143,7 +143,9 @@ class Imap(Button):
     def set_map(self):
         if self.level ==1 :
             self.map_name = 'classic_city.jpg'
+
             self.gap = df.display_height * 0.1437
+
         if self.level ==2 :
             self.map_name = 'china.jpg'
             self.gap = df.display_height * 0.181
@@ -163,8 +165,8 @@ class Imap(Button):
             self.map_name = 'night_lanterns.jpg'
             self.gap = df.display_height * 0.183
         if self.level ==8 :
-            self.map_name = 'night_lanterns.jpg'
-            self.gap = df.display_height * 0.18
+            self.map_name = 'mountain_valley.jpg'
+            self.gap = df.display_height * 0.05
         if self.level ==9 :
             self.map_name = 'snow1.jpg'
             self.gap = df.display_height * 0.17
@@ -190,13 +192,7 @@ class Imap(Button):
         self.filename = var.assetsDir + "backgrounds/" + self.map_name
 
 
-    #
-    # def highlight_icon(self):
-    #     s = pygame.Surface((self.rect.w, self.rect.h))
-    #     s.set_alpha(40)
-    #     s.fill((255, 255, 255))
-    #     var.gameDisplay.blit(s, (self.rect.x, self.rect.y))
-    #
+
     def draw_block(self):
         # var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
         if self.blocked:

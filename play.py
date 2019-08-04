@@ -22,8 +22,6 @@ class AddScreen(gen.Xscreen):
         self.map = map
         device.audio.music_theme = var.assetsDir + 'sounds/Little Swans Game.ogg'
         device.audio.play_music()
-        # self.font = pygame.font.Font("assets/fonts/stocky.ttf", 25)
-        # self.font = pygame.font.Font("assets/fonts/horrendo.ttf", 20)
         self.zombie_txt_pos = (0,0)
         self.exp_txt_pos = (df.display_width*0.2, 0)
         self.life_txt_pos = (df.display_width*0.3, 0)
@@ -35,7 +33,6 @@ class AddScreen(gen.Xscreen):
         self.font1 = txg.TextGame()
         self.font1.font_size = 30
         self.font1.color = df.violet
-        # self.font1.path = "assets/fonts/OpenSans-Light.ttf"
         self.font1.set_font()
 
     def run(self):
@@ -58,9 +55,10 @@ class AddScreen(gen.Xscreen):
         horde.limit = self.map.total
         horde.update()
         device.stats.total = self.map.total
-        # horde.new_enemy()
+
         hel = sp.Asprite()
         hel.load_images()
+
         weapon = sp.Weapon(hel.rect.x, hel.rect.y)
         weapon.bullet_available = device.stats.bullet_available
         bullets = []
@@ -84,10 +82,13 @@ class AddScreen(gen.Xscreen):
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
-                        hel.u = -8
-
+                        hel.u = -5
                     if event.key == pygame.K_RIGHT:
-                        hel.u = 10
+                        hel.u = 6
+                    if event.key == pygame.K_UP:
+                        hel.v = -8*0.5
+                    if event.key == pygame.K_DOWN:
+                        hel.v = 9
 
                     if event.key == pygame.K_SPACE:
                         weapon.get_loc(hel)
@@ -107,6 +108,10 @@ class AddScreen(gen.Xscreen):
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                         hel.u = 0
+                        hel.v = 0
+                    if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                        hel.u = 0
+                        hel.v = 0
 
             var.gameDisplay.fill(df.black)
             self.draw_sprite2(background)
@@ -117,11 +122,11 @@ class AddScreen(gen.Xscreen):
             home.animate() #call home animation
             weapon.moveBullets()
             # print('move bullets time:', pygame.time.get_ticks() - time_start)
-            # if hel.rect.x>0.5*df.display_width:
+
             horde.enemy_control(total_time)
             # print( home.rect.collidelist(horde.enemies))
             # print('rengine')
-            # print('enemy control time:', pygame.time.get_ticks() - time_start)
+
             for enemy in horde.enemies:
 
                 if enemy.dead:
