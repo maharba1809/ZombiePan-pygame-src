@@ -29,11 +29,11 @@ class Enemy(pygame.sprite.Sprite):
         self.files_attack = [asset_path + '/' + e for e in file_name]
         self.fileSizeAttack = (52, 77)
 
-        self.hit = False
+        self.startHit = False
         self.attack_delay = 15 #fps
         self.attack_count = 0
         self.damage_rate = 2
-        self.hitting = False
+        self.endHit = False
         self.preattack = False
         self.running = True
         self.index = 0
@@ -42,6 +42,7 @@ class Enemy(pygame.sprite.Sprite):
         self.dead_rate = 50
         self.loop_index = 0
         self.fps = 2
+
 
     def load_images(self):
         print('\n')
@@ -78,7 +79,7 @@ class Enemy(pygame.sprite.Sprite):
             self.image = self.imagesAttack[0]
             self.attack_count += 1
         else:
-            self.hit = True  # trigger hit
+            self.startHit = True  # trigger hit
             self.attack_count = 0  # return new attack
             self.preattack = False
 
@@ -94,12 +95,12 @@ class Enemy(pygame.sprite.Sprite):
         else:
             # stops hitting animation
             self.index = 0
-            self.hit = False
+            self.startHit = False
             self.running = True
+            self.endHit = True
             # print('under attacking!')
-            #if device.audio.sound_enabled:
-            device.audio.sound_attack.play()
-            device.stats.add_damage(self.damage_rate)
+            if device.audio.sound_enabled: device.audio.sound_attack.play()
+            # device.stats.add_damage(self.damage_rate)
 
 
         if self.rect.w != self.fileSizeAttack[0]: self.rect.w = self.fileSizeAttack[0]
@@ -135,7 +136,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.rect.w != self.fileSizeDead[0]: self.rect.w = self.fileSizeDead[0]
         if self.rect.h != self.fileSizeDead[0]: self.rect.h = self.fileSizeDead[1]
 
-    def animate(self):
+    def animate(self, dt):
         if self.alive:  # lived animation - Run
             
             if self.running:
@@ -145,7 +146,7 @@ class Enemy(pygame.sprite.Sprite):
                 else:
                     self.loop_index += 1
                 
-                self.move()
+                self.move(dt)
 
             if self.preattack:
                 if self.loop_index > self.fps:
@@ -154,7 +155,7 @@ class Enemy(pygame.sprite.Sprite):
                 else:
                     self.loop_index += 1
 
-            if self.hit:
+            if self.startHit:
                 #if self.loop_index > self.fps:
                     self.animate_hit()
                     #self.loop_index = 0
@@ -170,7 +171,7 @@ class Enemy(pygame.sprite.Sprite):
                 
         var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
 
-    def move(self):
+    def move(self,dt):
         # print(self.u)
         if self.rect.x + self.rect.w >= df.display_width:
             if self.u > 0:
@@ -178,13 +179,14 @@ class Enemy(pygame.sprite.Sprite):
                 self.u = -self.u
                 if device.audio.sound_enabled: device.audio.sound_bullet.play()
 
-        if self.rect.x < 0:
-            if self.u < 0:
-                self.rect.x -= self.u
-                self.u = -self.u
-                if device.audio.sound_enabled: device.audio.sound_bullet.play()
-        self.rect.x += self.u
-        self.rect.y += self.v
+        # if self.rect.x < 0:
+        #     if self.u < 0:
+        #         self.rect.x -= self.u
+        #         self.u = -self.u
+        #         if device.audio.sound_enabled: device.audio.sound_bullet.play()
+        self.rect.x += self.u * dt / 10
+        self.rect.y += self.v * dt / 10
+        # print(self.rect.x)
 
     def descrease_life(self):
         self.life -= self.dead_rate
@@ -262,41 +264,33 @@ class Horde():
         self.time_to_born = []
         self.umax = 2
 
-    def new_enemy(self):
-        if self.count < self.limit:
+    def born(self):
+
+        dx = -df.display_width / self.limit
+        x = int(dx)
+        # print(self.limit)
+        for item in range(0, self.limit):
             random_enemy = int(random.random()*1000)
             if random_enemy % 2 == 0:
                 enemy = MariaEnemy()
-                enemy.u = 2.5
+                enemy.u = 1
             elif random_enemy % 3 == 0:
                 enemy = ChildEnemy()
                 enemy.u = 2
             elif random_enemy % 5 == 0:
                 enemy = PirateEnemy()
-                enemy.u = 2.5
+                enemy.u = 1.5
             else:
                 enemy = Enemy()
-                enemy.u = 2
+                enemy.u = 0.8
 
-            self.count += 1
+
             enemy.load_images()
             # print(enemy.rect.h)
             enemy.rect.y = df.display_height - self.map_gap - enemy.rect.h - 10*random.random()
-            # enemy.rect.y =  df.display_height - self.map_gap - 77*random.random()
-
-            # enemy.u = 3*(1+random.random())
-            # print(enemy.u)
+            enemy.rect.x = x
+            x += dx
+            # print(item)
 
             self.enemies.append(enemy)
 
-    def enemy_control(self,t0):
-        if self.time_to_born:
-            if t0 >= self.time_to_born[0]:
-                print('new enemy', t0)
-                self.new_enemy()
-                del self.time_to_born[0]
-
-    def update(self):
-        for i in range(1,self.limit+1):
-            self.time_to_born.append(i*500)
-        # print('ttb:',self.time_to_born)

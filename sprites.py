@@ -155,7 +155,7 @@ class Weapon():
         self.y = hel.rect.y + hel.rect.h * 0.9
         self.uinert = hel.u*0.85
 
-    def moveBullets(self):
+    def moveBullets(self, dt):
         # print(len(self.magazine))
         if len(self.magazine)>0:
             # print(self.magazine)
@@ -164,8 +164,8 @@ class Weapon():
                 if bullet.loop_index > bullet.fps:
                     # print(bullet.rect.x, bullet.u)
                     # bullet.u = self.uinert
-                    bullet.rect.x += bullet.u
-                    bullet.rect.y += bullet.v
+                    bullet.rect.x += bullet.u * dt/10
+                    bullet.rect.y += bullet.v * dt/10
                     bullet.loop_index = 0
                 else:
                     bullet.loop_index += 1                    
@@ -213,6 +213,7 @@ class Asprite(pygame.sprite.Sprite):
         self.sound = device.audio.sound_hel
         self.loop_index = 0
         self.fps = 5
+        self.life = 100
 
 
     def load_images(self):
@@ -226,7 +227,7 @@ class Asprite(pygame.sprite.Sprite):
                 self.imagesDead.append(pygame.transform.scale(images, self.fileSizeDead))
 
 
-    def animate(self):
+    def animate(self, dt):
 
         if self.alive:  # lived animation - Run
             if self.loop_index > self.fps:
@@ -262,10 +263,10 @@ class Asprite(pygame.sprite.Sprite):
                 else:
                     self.loop_index += 1
 
-        self.move()
+        self.move(dt)
         self.draw()
 
-    def move(self):
+    def move(self, dt):
         # print(self.u)
         if self.rect.x + self.rect.w >= df.display_width:
             if self.u > 0:
@@ -290,11 +291,16 @@ class Asprite(pygame.sprite.Sprite):
                 self.v = -self.v
                 if device.audio.sound_enabled: self.sound.play()
 
-        self.rect.x += self.u
-        self.rect.y += self.v
+        self.rect.x += self.u * dt/10
+        self.rect.y += self.v * dt/10
 
     def draw(self):
         var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
+
+
+    def decrease_life(self,damage_rate):
+        print('under attack!')
+        self.life -= damage_rate
 
 class House (Asprite):
     def __init__(self):
@@ -320,6 +326,7 @@ class House (Asprite):
         self.y = 0
         self.index = 0
         self.buffer_index = -1
+        self.life = 100
 
     def set_position(self):
         self.rect.x = df.display_width - self.rect.w
@@ -327,31 +334,31 @@ class House (Asprite):
 
     def animate(self):
         if self.alive:
-            if device.stats.life > 90:
+            if self.life > 90:
                 self.index = 0
-            elif device.stats.life > 80:
+            elif self.life > 80:
                 self.index = 1
-            elif device.stats.life > 60:
+            elif self.life > 60:
                 self.index = 2
-            elif device.stats.life > 40:
+            elif self.life > 40:
                 self.index = 3
-            elif device.stats.life > 30:
+            elif self.life > 30:
                 self.index = 4
-            elif device.stats.life > 28:
+            elif self.life > 28:
                 self.index = 5
-            elif device.stats.life > 26:
+            elif self.life > 26:
                 self.index = 6
-            elif device.stats.life > 24:
+            elif self.life > 24:
                 self.index = 7
-            elif device.stats.life > 22:
+            elif self.life > 22:
                 self.index = 8
-            elif device.stats.life > 20:
+            elif self.life > 20:
                 self.index = 9
-            elif device.stats.life > 15:
+            elif self.life > 15:
                 self.index = 10
-            elif device.stats.life > 10:
+            elif self.life > 10:
                 self.index = 11
-            elif device.stats.life > 5:
+            elif self.life > 5:
                 self.index = 12
             else:
                 self.index = 13
@@ -360,7 +367,8 @@ class House (Asprite):
                 self.image = self.imagesRun[self.index]
                 self.buffer_index = self.index
 
-            if device.stats.life <= 0:
+            # if device.stats.life <= 0:
+            if self.life <= 0:
                 self.index = 0
                 self.alive = False
         else:
@@ -368,7 +376,7 @@ class House (Asprite):
             if self.index < len(self.imagesDead):
                 self.image = self.imagesDead[self.index]
                 self.index += 1
-            else:
-                device.stats.dead_player = True
+            # else:
+                # device.stats.dead_player = True
+        # device.stats.life = self.life
         self.draw()
-

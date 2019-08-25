@@ -2,13 +2,13 @@
 import sprites as sp
 import defaults as df
 import pygame
-import re
+# import re
 import time
 import generic as gen
 import var
 import device
 import final
-import random
+# import random
 import pause
 import imp
 import datetime
@@ -24,16 +24,23 @@ class AddScreen(gen.Xscreen):
         device.audio.play_music()
         self.zombie_txt_pos = (0,0)
         self.exp_txt_pos = (df.display_width*0.2, 0)
-        self.life_txt_pos = (df.display_width*0.3, 0)
-        self.map_txt_pos = (df.display_width*0.5, 0)
-        self.time_txt_pos = (df.display_width*0.6, 0)
-        self.bullet_txt_pos = (df.display_width*0.8, 0)
-        self.display_text_pos = (df.display_width * 0.5 - 100, df.display_height * 0.5 + 50)
+        self.life_txt_pos = (df.display_width*0.4, 0)
+        self.map_txt_pos = (df.display_width*0.6, 0)
+        self.time_txt_pos = (df.display_width*0.7, 0)
+        self.bullet_txt_pos = (df.display_width*0.85, 0)
+        self.display_text_pos_home = (df.display_width * 0.2, df.display_height * 0.5 + 50)
+        self.display_text_pos = (df.display_width * 0.1 , df.display_height * 0.4 + 50)
+        self.display_text_pos_hel = (df.display_width * 0.2, df.display_height * 0.7 + 50)
 
         self.font1 = txg.TextGame()
         self.font1.font_size = 30
         self.font1.color = df.violet
         self.font1.set_font()
+
+        self.font2 = txg.TextGame()
+        self.font2.font_size = 60
+        self.font2.color = df.red
+        self.font2.set_font()
 
     def run(self):
         imp.reload(sp)
@@ -53,7 +60,8 @@ class AddScreen(gen.Xscreen):
         horde = zmb.Horde()
         horde.map_gap = self.map.gap
         horde.limit = self.map.total
-        horde.update()
+        horde.born()
+
         device.stats.total = self.map.total
 
         hel = sp.Asprite()
@@ -71,6 +79,7 @@ class AddScreen(gen.Xscreen):
         home.load_images()
         home.gap = self.map.gap
         home.set_position()
+        dt = 0
 
         while not self.stopEngine:
             time_start = pygame.time.get_ticks()
@@ -117,32 +126,51 @@ class AddScreen(gen.Xscreen):
             self.draw_sprite2(background)
 
             # self.draw_sprite2(hel)
-            hel.animate()  # callls animation defs
+            hel.animate(dt)  # callls animation defs
             # print('helicopter animate time:', pygame.time.get_ticks() - time_start)
             home.animate() #call home animation
-            weapon.moveBullets()
+            weapon.moveBullets(dt)
             # print('move bullets time:', pygame.time.get_ticks() - time_start)
 
-            horde.enemy_control(total_time)
-            # print( home.rect.collidelist(horde.enemies))
-            # print('rengine')
-
             for enemy in horde.enemies:
-
                 if enemy.dead:
                     horde.enemies.remove(enemy)
                     continue
 
-                enemy.animate()
+                enemy.animate(dt)
 
                 if enemy.rect.colliderect(home.rect):
                     enemy.preattack = True
                     enemy.running = False
                         # enemy.rect.x -=5
-                    if device.stats.life <= 0:
-                        break
-                    if device.audio.sound_enabled:
-                        device.audio.sound_glass_break.play()
+                    # if device.stats.life <= 0:
+                    #     break
+
+                    if enemy.endHit:
+                        home.decrease_life(enemy.damage_rate)
+                        enemy.endHit = False
+
+                        if home.life <= 0:
+                            device.stats.dead_player = True
+                            break
+
+                        if device.audio.sound_enabled:
+                            device.audio.sound_attack.play()
+
+                if enemy.rect.colliderect(hel.rect):
+                    enemy.preattack = True
+                    enemy.running = False
+                    # enemy.rect.x -=5
+                    if enemy.endHit:
+                        hel.decrease_life(enemy.damage_rate)
+                        enemy.endHit = False
+
+                        if hel.life<=0:
+                            device.stats.dead_player = True
+                            break
+
+                        if device.audio.sound_enabled:
+                            device.audio.sound_attack.play()
 
                 # Collision detection
                 if len(weapon.magazine)>0:
@@ -161,17 +189,24 @@ class AddScreen(gen.Xscreen):
 
                                 weapon.magazine.remove(bullet)
             # print('Horde check time:',pygame.time.get_ticks() - time_start)
+
             if device.stats.end_level():
+
                 self.stopEngine = True
                 # self.draw_selected((0, df.display_height * 0.5 + 50), (df.display_width, 30), 100, df.white)
-                if device.stats.damage !=0:
-                    display_text = 'Damage:' + str(int(device.stats.damage))+ '% :('
 
-                else:
-                    display_text = 'Perfect!:)'
-                self.message_display(display_text, self.display_text_pos)
+                if home.life > 0 and hel.life > 0:
+                    if home.life == 100 and hel.life == 100:
+                        display_text = 'Perfect!:)'
+                        self.message_display2(display_text, self.display_text_pos)
+                    else:
+                        display_text = 'Home / House/ Casa:' + str(int(home.life))
+                        self.message_display2(display_text, self.display_text_pos_home)
 
-                if device.stats.life > 0:
+                        display_text = 'Vehicle/ Hub / Hel:' + str(int(hel.life))
+                        self.message_display2(display_text, self.display_text_pos_hel)
+
+
                     self.draw_sprite2(info_winer)
                     if device.audio.sound_enabled: device.audio.sound_winer.play()
 
@@ -188,35 +223,43 @@ class AddScreen(gen.Xscreen):
 
                 else:
                     self.draw_sprite2(info_loser)
+
+                    display_text = 'Try Again! / versuchen / Perdiste:'
+                    self.message_display(display_text, self.display_text_pos)
+
                     if device.audio.sound_enabled: device.audio.sound_loser.play()
                     pygame.display.update()
                     time.sleep(3)
                     device.stats.winner = False
                 #check point
             # print('control time:', pygame.time.get_ticks() - time_start)
-            self.sent_msg(weapon, total_time)
+            self.sent_msg(weapon, total_time, home.life)
             pygame.display.update()
             # print('1',pygame.time.get_ticks() - time_start)
-            dt = pygame.time.get_ticks() - time_start
+
             # print('end loop',total_time, dt, time_start, pygame.time.get_ticks())
             # print('loop time:', pygame.time.get_ticks() - time_start)
             total_time += dt
+            if total_time > 1000000: total_time = 0
 
-    def sent_msg(self, weapon,total_time):
+            dt = pygame.time.get_ticks() - time_start
+
+    def sent_msg(self, weapon,total_time, home_life):
         self.draw_selected((0, 0), (df.display_width, 40), 90, df.white)
         self.font1.color = df.green
         self.message_display('Zombies:' + str(device.stats.total - device.stats.killed),  self.zombie_txt_pos)
         self.font1.color = df.blue
-        self.message_display('Exp:' + str(int(device.stats.experience)), self.exp_txt_pos)
+        self.message_display('Killed:' + str(int(device.stats.experience)), self.exp_txt_pos)
         self.font1.color = df.white
-        self.message_display('Life:' + str(int(device.stats.life)) + "%", self.life_txt_pos)
+        self.message_display('Home:' + str(int(home_life)), self.life_txt_pos)
         self.font1.color = df.orange
         self.message_display('Map:' + str(device.stats.level),self.map_txt_pos)
         self.font1.color = df.gold
-        self.message_display('Time:' + str(round(total_time, 1)), self.time_txt_pos)
+        self.message_display('Time:' + str(int(total_time/1000)), self.time_txt_pos)
         self.font1.color = df.black
         self.message_display('Bullets:' + str(weapon.bullet_available), self.bullet_txt_pos)
         self.font1.color = df.red
 
-
-
+    def message_display2(self, text, center):
+        self.font2.center = center
+        self.font2.display_text(text)
