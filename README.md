@@ -22,6 +22,9 @@ nordik14@gmail.com
 Linux user must download ZombiePan.tar.gz uncompress it and run in terminal ./run 
 Windows user must download ZombiePan.rar uncompress it and run run.exe
 
+Download of Builds:
+https://gamejolt.com/dashboard/games/420244
+
 
 #Download 
 
@@ -65,7 +68,7 @@ Probado en windows y linux
     Executa el archivo run.bat para correr en windows o run.sh para correr linux
 
 #INSTRUCCIONES PARA CORRER DESDE EXECUTABLES:
-
+descarga desde https://gamejolt.com/dashboard/games/420244
 LINUX:
 
 1. DESCARGA EL ARCHIVO ZombiePan.tar.gz
@@ -79,3 +82,4 @@ WINDOSW 7-10
 3. DOBLE CLICK EN run.exe
 
 Disfrutenlo  estare dando soporte como pueda y hasta que encuentre un sponsor...
+Apoya
