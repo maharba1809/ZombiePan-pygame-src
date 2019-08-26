@@ -36,7 +36,13 @@ class AddScreen(gen.Xscreen):
          device.audio.play_music()
 
     def run(self):
-        mapsback = sp.Sprite2(self.backfile, 0, 0,df.display_width , df.display_height, 0, 0)
+        mapsback = sp.Sprite2()
+        mapsback.file = self.backfile
+        mapsback.w = df.display_width
+        mapsback.h = df.display_height
+        mapsback.set_image()
+        mapsback.rect.x = 0
+        mapsback.rect.y = 0
 
         playBtn = btns.Button(self.play_file, df.display_width*0.2, df.display_height*0.8,100,100)
         playBtn.hover_text = self.play_txt

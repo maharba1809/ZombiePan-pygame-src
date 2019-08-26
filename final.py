@@ -19,19 +19,31 @@ class AddScreen(gen.Xscreen):
 
 
     def run(self):
+        # background = sp.Sprite2(v, 0, 0, df.display_width, df.display_height, 0, 0)
 
-        background = sp.Sprite2(var.assetsDir + 'backgrounds/end.jpg', 0, 0, df.display_width, df.display_height, 0, 0)
+        mapsback = sp.Sprite2()
+        mapsback.file = var.assetsDir + 'backgrounds/end.jpg'
+        mapsback.w = df.display_width
+        mapsback.h = df.display_height
+        mapsback.set_image()
+        mapsback.rect.x = 0
+        mapsback.rect.y = 0
+
         total_time = 0
-
+        #
+        # horde = zmb.Horde()
+        # horde.map_gap = 10
+        # horde.limit = 200
+        # # horde.update()
         horde = zmb.Horde()
         horde.map_gap = 10
-        horde.limit = 200
-        horde.update()
+        horde.limit = 100
+        horde.born()
 
-        for i in range(1, horde.limit + 1):
-            horde.time_to_born.append(i * 100)
-
-
+        # for i in range(1, horde.limit + 1):
+        #     horde.time_to_born.append(i * 100)
+        #
+        dt = 50
         while not self.stopEngine:
             time_start = pygame.time.get_ticks()
             for event in pygame.event.get():
@@ -43,19 +55,19 @@ class AddScreen(gen.Xscreen):
                     if event.key == pygame.K_ESCAPE:
                         self.stopEngine = True
             var.gameDisplay.fill(df.black)
-            self.draw_sprite2(background)
+            self.draw_sprite2(mapsback)
 
-            horde.enemy_control(total_time)
+
             for enemy in horde.enemies:
-                enemy.animate()
+                enemy.animate(dt)
                 # print(enemy.rect.x)
 
 
             self.draw_selected((35,0), (df.display_width, 50), 100, df.white)
             self.message_display('Thanks.. Danke... Gracias', (35, 20))
             dt = pygame.time.get_ticks() - time_start
-            total_time += dt
-            pygame.display.update()
-            var.clock.tick(var.fps)
 
+            pygame.display.update()
+            # var.clock.tick(var.fps)
+            total_time += dt
 

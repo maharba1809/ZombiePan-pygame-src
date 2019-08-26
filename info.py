@@ -20,10 +20,16 @@ class AddScreen(gen.Xscreen):
         # self.font = pygame.font.Font("assets/fonts/horrendo.ttf", 20)
         self.font1.font_size = 30
         self.font1.set_font()
+
     def run(self):
 
-
-        mapsback = sp.Sprite2(self.background_file, 0, 0, df.display_width, df.display_height, 0, 0)
+        mapsback = sp.Sprite2()
+        mapsback.file = self.background_file
+        mapsback.w = df.display_width
+        mapsback.h = df.display_height
+        mapsback.set_image()
+        mapsback.rect.x = 0
+        mapsback.rect.y = 0
 
         exitBtn = btns.Button(self.buy_file, df.display_width * 0.5 - 50, df.display_height * 0.8, 100, 100)
 

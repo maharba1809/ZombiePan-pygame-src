@@ -3,6 +3,7 @@ import var
 import device
 import defaults as df
 import pygame
+import sprites as sp
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
@@ -42,6 +43,7 @@ class Enemy(pygame.sprite.Sprite):
         self.dead_rate = 50
         self.loop_index = 0
         self.fps = 2
+        self.prize = False
 
 
     def load_images(self):
@@ -271,6 +273,7 @@ class Horde():
         # print(self.limit)
         for item in range(0, self.limit):
             random_enemy = int(random.random()*1000)
+
             if random_enemy % 2 == 0:
                 enemy = MariaEnemy()
                 enemy.u = 1
@@ -284,6 +287,12 @@ class Horde():
                 enemy = Enemy()
                 enemy.u = 0.8
 
+            random_prize = int(random.random() * 100)
+            if random_prize % 3 ==0:
+                enemy.prize = True
+                enemy.ammo = sp.Ammo()
+                enemy.ammo.set_image()
+                print('Prize........')
 
             enemy.load_images()
             # print(enemy.rect.h)

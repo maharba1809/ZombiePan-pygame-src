@@ -72,7 +72,14 @@ class AddScreen(gen.Xscreen):
         icon_map14_x = 0.35
         icon_map14_y = 0.75
 
-        mapsback = sp.Sprite2(self.background_file, 0, 0, df.display_width, df.display_height, 0, 0)
+        mapsback = sp.Sprite2()
+        mapsback.file = self.background_file
+        mapsback.w = df.display_width
+        mapsback.h = df.display_height
+        mapsback.set_image()
+        mapsback.rect.x = 0
+        mapsback.rect.y = 0
+
         if not len(device.stats.maps)>0:
             maps = []
             maps.append(btns.Imap(self.map1_file, df.display_width*icon_map1_x, df.display_height*icon_map1_y, 1, 20, False, 10 ))
@@ -88,7 +95,7 @@ class AddScreen(gen.Xscreen):
             maps.append(btns.Imap(self.map11_file, df.display_width*icon_map11_x, df.display_height*icon_map11_y, 11, 20, True, 19 ))
             maps.append(btns.Imap(self.map12_file, df.display_width*icon_map12_x, df.display_height*icon_map12_y, 12, 20, True, 20 ))
             maps.append(btns.Imap(self.map13_file, df.display_width*icon_map13_x, df.display_height*icon_map13_y, 13, 20, True, 21 ))
-            maps.append(btns.Imap(self.map14_file, df.display_width*icon_map14_x, df.display_height*icon_map14_y, 14, 20, True, 22 ))
+            maps.append(btns.Imap(self.map14_file, df.display_width*icon_map14_x, df.display_height*icon_map14_y, 14, 20, False, 1 ))
             # maps.append(sp.Imap(self.map14_file, 300, 350, 14, 20, False, 1))
             # for m in maps:
             #     m.hover_text = m.file

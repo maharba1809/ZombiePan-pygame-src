@@ -55,7 +55,16 @@ class AddScreen(gen.Xscreen):
 
 
     def run(self):
-        mapsback = sp.Sprite2(self.background_file, 0, 0, df.display_width, df.display_height, 0, 0)
+
+        mapsback = sp.Sprite2()
+        mapsback.file = self.background_file
+        mapsback.w = df.display_width
+        mapsback.h = df.display_height
+        mapsback.set_image()
+        mapsback.rect.x = 0
+        mapsback.rect.y = 0
+
+
         btnEnableMusic = btns.Button(self.enable_file, self.music_button_x, self.music_button_y, self.button_size, self.button_size)
         btnDisableMusic = btns.Button(self.disable_file, self.music_button2_x, self.music_button2_y, self.button_size,self.button_size)
         btnEnableSound = btns.Button(self.enable_file, self.sound_button_x, self.sound_button_y, self.button_size,self.button_size)

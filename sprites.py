@@ -26,18 +26,19 @@ class Sprite():
 
 class Sprite2(pygame.sprite.Sprite):
     #class to define simple image as sprite
-    def __init__(self, image_file, x, y, w, h, u, v):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(image_file)
-        # print(image_file)
-        self.image = pygame.transform.scale(self.image, (w, h))            
+    def __init__(self):
+
+        self.file = ''
+        self.image = ''
+        self.w = 0
+        self.h = 0
+        self.rect = ''
+
+
+    def set_image(self):
+        self.image = pygame.image.load(self.file)
+        self.image = pygame.transform.scale(self.image, (self.w, self.h))
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.u = u
-        self.v = v
-        self.file = image_file
-        print('created sprite from:',image_file)
 
 class Sprite3(pygame.sprite.Sprite):
 #generic class to create a sprite with animation properties, Run&Dead
@@ -110,45 +111,82 @@ class Sprite3(pygame.sprite.Sprite):
                 if device.audio.sound_enabled:
                     device.audio.sound_hel.play()
 
-class AddBullet(Sprite2):
-    def __init__(self,x,y):
-        self.image_file = var.assetsDir + 'bullet1.png'
-        w = 12
-        h = 18
-        u = 0
-        v = 10
-        Sprite2.__init__(self,self.image_file,x,y, w, h, u, v)
+class Bullet(Sprite2):
+    def __init__(self):
+        Sprite2.__init__(self)
+        self.file = var.assetsDir + 'bullets/bullet1.png'
+        self.w = 12
+        self.h = 18
+        self.u = 0
+        self.v = 10
         self.loop_index = 0
         self.fps = 0
+        self.free = False
 
         # newbullet = self.Sprite2(var.assetsDir + 'bullet1.png', xb, yb, 12, 18, hel.u, 9)
 
 class Weapon():
-    def __init__(self,x,y):
+    def __init__(self):
         self.magazine = []
         self.limit = 10
         self.x = 0
         self.y = 0
         self.uinert = 0
-        self.bullet_available = 0
-        # self.shoot_count = 0
         self.loop_index = 0
         self.fps = 2
+        self.bullet_available = 0
+        self.freeBullets = []
+
+    def load_bullets(self):
+        if self.bullet_available > 0:
+            for i in range(0, self.bullet_available):
+                b = Bullet()
+                random_enemy = int(random.random() * 1000)
+                if random_enemy % 2 == 0:
+                    b.file = var.assetsDir + 'bullets/bullet2.png'
+                elif random_enemy % 3 == 0:
+                    b.file = var.assetsDir + 'bullets/bullet3.png'
+                else:
+                    b.file = var.assetsDir + 'bullets/bullet1.png'
+
+                b.set_image()
+                b.rect.x = 0
+                b.rect.y = -100
+                self.magazine.append(b)
+
+    def load_extra_bullet(self, amount):
+        for i in range(0, amount):
+            b = Bullet()
+            random_enemy = int(random.random() * 1000)
+            if random_enemy % 2 == 0:
+                b.file = var.assetsDir + 'bullets/bullet2.png'
+            elif random_enemy % 3 == 0:
+                b.file = var.assetsDir + 'bullets/bullet3.png'
+            else:
+                b.file = var.assetsDir + 'bullets/bullet1.png'
+
+            b.set_image()
+            b.rect.x = 0
+            b.rect.y = -100
+            self.magazine.append(b)
+
 
     def shoot_bullet(self):
-        if  self.bullet_available>0:
-            new_bullet = AddBullet(self.x,self.y)
-            new_bullet.u = self.uinert
-            if len(self.magazine) < self.limit:
-                self.magazine.append(new_bullet)
-                # self.shoot_count += 1
-                self.bullet_available -=1
-                if device.audio.sound_enabled:
-                    device.audio.sound_bullet.play()
-            else:
-                print('Weapon overload')
-        else:
-            print('No Bullets')
+        for b in self.magazine:
+            b.u = self.uinert
+            b.rect.x = self.x
+            b.rect.y = self.y
+            self.freeBullets.append(b)
+            self.magazine.remove(b)
+
+            if device.audio.sound_enabled:
+                device.audio.sound_bullet.play()
+
+            break
+
+        if len(self.magazine) == 0:
+            print('No Ammo')
+
 
     def get_loc(self,hel):
         self.x = hel.rect.x + hel.rect.w * 0.7
@@ -159,43 +197,37 @@ class Weapon():
         # print(len(self.magazine))
         if len(self.magazine)>0:
             # print(self.magazine)
-            
-            for bullet in self.magazine:
-                if bullet.loop_index > bullet.fps:
-                    # print(bullet.rect.x, bullet.u)
-                    # bullet.u = self.uinert
-                    bullet.rect.x += bullet.u * dt/10
-                    bullet.rect.y += bullet.v * dt/10
-                    bullet.loop_index = 0
-                else:
-                    bullet.loop_index += 1                    
-                
-                if bullet.rect.y > df.display_height:
-                    # del bullet1
-                    self.magazine.remove(bullet)
-                    continue
-                var.gameDisplay.blit(bullet.image, (bullet.rect.x, bullet.rect.y))
+            if self.freeBullets:
+                for bullet in self.freeBullets:
+
+                    if bullet.loop_index > bullet.fps:
+                        # print(bullet.rect.x, bullet.u)
+                        # bullet.u = self.uinert
+                        bullet.rect.x += bullet.u * dt/10
+                        bullet.rect.y += bullet.v * dt/10
+                        bullet.loop_index = 0
+                    else:
+                        bullet.loop_index += 1
+
+                    if bullet.rect.y + bullet.h > df.display_height:
+                        # del bullet1
+                        self.freeBullets.remove(bullet)
+                        continue
+                    var.gameDisplay.blit(bullet.image, (bullet.rect.x, bullet.rect.y))
         
-            
-                
-                
-        
-class Asprite(pygame.sprite.Sprite):
+class Asprite(Sprite2):
     def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
+        Sprite2.__init__(self)
 
         self.files_run = []
-        self.files_run = [var.assetsDir + 'helicopter1.png']
-        self.files_run.append(var.assetsDir + 'helicopter2.png')
-        self.files_run.append(var.assetsDir + 'helicopter3.png')
-        self.files_run.append(var.assetsDir + 'helicopter4.png')
         self.files_dead = []
-        self.fileSizeDead = []
-        self.fileSizeRun = (210, 62)
+        self.fileSizeDead = (0,0)
+        self.fileSizeRun = (0, 0)
 
         self.index = 0
-        self.image = pygame.image.load(self.files_run[0])
-        self.rect = self.image.get_rect()
+
+        # pygame.image.load(self.files_run[0])
+        # self.rect = self.image.get_rect()
 
         self.u = 0
         self.v = 0
@@ -205,18 +237,22 @@ class Asprite(pygame.sprite.Sprite):
         self.imagesRun = []
         self.imagesDead = []
         self.imagesAttack = []
-        self.rect = self.image.get_rect()
-        self.rect.x = 20
-        self.rect.y = df.display_height*0.1
-        self.rect.w = 0
-        self.rect.h = 0
+        # self.rect = self.image.get_rect()
+        # self.rect.x = 20
+        # self.rect.y = df.display_height*0.1
+        # self.rect.w = 0
+        # self.rect.h = 0
         self.sound = device.audio.sound_hel
         self.loop_index = 0
-        self.fps = 5
+        self.fps = 2
         self.life = 100
 
-
     def load_images(self):
+
+        self.set_image()
+        self.rect.x = 20
+        self.rect.y = df.display_height * 0.1
+
         for item in self.files_run:
             images = pygame.image.load(item)
             self.imagesRun.append(pygame.transform.scale(images, self.fileSizeRun))
@@ -241,8 +277,12 @@ class Asprite(pygame.sprite.Sprite):
                 self.loop_index = 0
             else:
                 self.loop_index += 1
-            if self.rect.w != self.fileSizeRun[0]: self.rect.w = self.fileSizeRun[0]
-            if self.rect.h != self.fileSizeRun[1]: self.rect.h = self.fileSizeRun[1]
+
+            # if self.w != self.fileSizeRun[0]:
+            #     self.rect.w = self.fileSizeRun[0]
+            #
+            # if self.h != self.fileSizeRun[1]:
+            #     self.rect.h = self.fileSizeRun[1]
         else:
             if self.u!=0:
                 self.index = 0
@@ -302,6 +342,21 @@ class Asprite(pygame.sprite.Sprite):
         print('under attack!')
         self.life -= damage_rate
 
+class Vehicle(Asprite):
+    def __init__(self):
+        Asprite.__init__(self)
+        self.files_run = [var.assetsDir + 'helicopter1.png']
+        self.files_run.append(var.assetsDir + 'helicopter2.png')
+        self.files_run.append(var.assetsDir + 'helicopter3.png')
+        self.files_run.append(var.assetsDir + 'helicopter4.png')
+        self.fileSizeRun = (210, 62)
+        self.fileSizeDead = (0, 0)
+        self.file = self.files_run[0]
+        self.w = 210
+        self.h = 62
+
+
+
 class House (Asprite):
     def __init__(self):
         Asprite.__init__(self)
@@ -319,14 +374,15 @@ class House (Asprite):
         self.files_dead = [asset_path + '/' + e for e in file_name]
         self.fileSizeDead = (300, 250)
 
-        self.rect.w = self.fileSizeRun[0]
-        self.rect.h = self.fileSizeRun[1]
+        self.w = self.fileSizeRun[0]
+        self.h = self.fileSizeRun[1]
 
         self.u = 0
         self.y = 0
         self.index = 0
         self.buffer_index = -1
         self.life = 100
+        self.file = self.files_run[0]
 
     def set_position(self):
         self.rect.x = df.display_width - self.rect.w
@@ -380,3 +436,17 @@ class House (Asprite):
                 # device.stats.dead_player = True
         # device.stats.life = self.life
         self.draw()
+
+class Ammo(Sprite2):
+    def __init__(self):
+
+        Sprite2.__init__(self)
+
+        self.file = 'assets/bullets/box5.png'
+        self.w = 50
+        self.h = 50
+
+    def draw(self):
+        var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
+
+

@@ -41,21 +41,49 @@ class AddScreen(gen.Xscreen):
         self.font2.font_size = 60
         self.font2.color = df.red
         self.font2.set_font()
+        self.display_text_pos_lost = self.bullet_txt_pos
+        self.display_text_pos_win = self.bullet_txt_pos
+
+
 
     def run(self):
         imp.reload(sp)
         imp.reload(final)
         imp.reload(zmb)
+        imp.reload(pause)
 
         print('\n')
         if device.audio.sound_enabled: device.audio.sound_hel.play()
 
-        background = sp.Sprite2(self.map.filename, 0, 0, df.display_width, df.display_height, 0, 0)
+        mapsback = sp.Sprite2()
+        mapsback.file = self.map.filename
+        mapsback.w = df.display_width
+        mapsback.h = df.display_height
+        mapsback.set_image()
+        mapsback.rect.x = 0
+        mapsback.rect.y = 0
 
-        info_winer = sp.Sprite2(var.assetsDir + 'enabled.png', df.display_width * 0.5 - 40, df.display_height * 0.5 - 40, 80, 80, 0,
-                                0)
-        info_loser = sp.Sprite2(var.assetsDir + 'disabled.png', df.display_width * 0.5 - 40, df.display_height * 0.5 - 40, 80, 80, 0,
-                                0)
+        info_winner = sp.Sprite2()
+        info_winner.file = var.assetsDir + 'enabled.png'
+        info_winner.w = 200
+        info_winner.h = 200
+
+        info_winner.set_image()
+        info_winner.rect.x = df.display_width * 0.5 - info_winner.w * 0.5
+        info_winner.rect.y = df.display_height * 0.5 - info_winner.h * 0.5
+        self.display_text_pos_win = (df.display_width * 0.5 - 100, info_winner.rect.y + info_winner.h )
+        self.display_text_pos_home =  (df.display_width * 0.2, self.display_text_pos_win[1] + 80)
+        self.display_text_pos_hel =  (df.display_width * 0.2, self.display_text_pos_home[1] + 80)
+
+        info_loser = sp.Sprite2()
+        info_loser.file = var.assetsDir + 'disabled.png'
+        info_loser.w = 200
+        info_loser.h = 200
+
+        info_loser.set_image()
+        info_loser.rect.x = df.display_width * 0.5 - info_winner.w * 0.5
+        info_loser.rect.y = df.display_height * 0.5 - info_winner.h * 0.5
+        self.display_text_pos_lost = (df.display_width * 0.1, info_loser.rect.y + info_loser.h*1.1)
 
         horde = zmb.Horde()
         horde.map_gap = self.map.gap
@@ -64,13 +92,12 @@ class AddScreen(gen.Xscreen):
 
         device.stats.total = self.map.total
 
-        hel = sp.Asprite()
+        hel = sp.Vehicle()
         hel.load_images()
 
-        weapon = sp.Weapon(hel.rect.x, hel.rect.y)
+        weapon = sp.Weapon()
         weapon.bullet_available = device.stats.bullet_available
-        bullets = []
-        uinert = 0.5 * hel.u
+        weapon.load_bullets()
 
         device.stats.new_level()
         total_time = 0
@@ -79,7 +106,9 @@ class AddScreen(gen.Xscreen):
         home.load_images()
         home.gap = self.map.gap
         home.set_position()
-        dt = 0
+        dt = 1
+
+        freeAmmo = []
 
         while not self.stopEngine:
             time_start = pygame.time.get_ticks()
@@ -104,6 +133,7 @@ class AddScreen(gen.Xscreen):
                         weapon.shoot_bullet()
 
 
+
                     if event.key == pygame.K_ESCAPE:
                         pauseScreen = pause.AddScreen()
                         time.sleep(0.1)
@@ -123,7 +153,7 @@ class AddScreen(gen.Xscreen):
                         hel.v = 0
 
             var.gameDisplay.fill(df.black)
-            self.draw_sprite2(background)
+            self.draw_sprite2(mapsback)
 
             # self.draw_sprite2(hel)
             hel.animate(dt)  # callls animation defs
@@ -173,8 +203,8 @@ class AddScreen(gen.Xscreen):
                             device.audio.sound_attack.play()
 
                 # Collision detection
-                if len(weapon.magazine)>0:
-                    for bullet in weapon.magazine:
+                if len(weapon.freeBullets)>0:
+                    for bullet in weapon.freeBullets:
                         if enemy.rect.colliderect(bullet.rect):
 
                             if device.audio.sound_enabled:
@@ -186,9 +216,21 @@ class AddScreen(gen.Xscreen):
                                 if not enemy.alive:
                                     device.stats.add_kill()
                                     df.dead_time = datetime.datetime.now()
+                                    if enemy.prize:
+                                        enemy.ammo.rect.x = enemy.rect.x + enemy.rect.w*1.1
+                                        enemy.ammo.rect.y = enemy.rect.y + enemy.rect.h -enemy.ammo.h
+                                        freeAmmo.append(enemy.ammo)
 
-                                weapon.magazine.remove(bullet)
-            # print('Horde check time:',pygame.time.get_ticks() - time_start)
+                            weapon.freeBullets.remove(bullet)
+
+            for box in freeAmmo:
+                box.draw()
+                if box.rect.colliderect(hel.rect):
+                    print('extra ammo')
+                    freeAmmo.remove(box)
+                    weapon.load_extra_bullet(5)
+                    break
+
 
             if device.stats.end_level():
 
@@ -198,7 +240,7 @@ class AddScreen(gen.Xscreen):
                 if home.life > 0 and hel.life > 0:
                     if home.life == 100 and hel.life == 100:
                         display_text = 'Perfect!:)'
-                        self.message_display2(display_text, self.display_text_pos)
+                        self.message_display2(display_text, self.display_text_pos_win)
                     else:
                         display_text = 'Home / House/ Casa:' + str(int(home.life))
                         self.message_display2(display_text, self.display_text_pos_home)
@@ -207,7 +249,7 @@ class AddScreen(gen.Xscreen):
                         self.message_display2(display_text, self.display_text_pos_hel)
 
 
-                    self.draw_sprite2(info_winer)
+                    self.draw_sprite2(info_winner)
                     if device.audio.sound_enabled: device.audio.sound_winer.play()
 
                     # print(var.map_settings[2])
@@ -219,18 +261,19 @@ class AddScreen(gen.Xscreen):
                         finalScreen.run()
 
                     device.stats.winner = True
-                    device.stats.bullet_available = weapon.bullet_available + 25
+                    device.stats.bullet_available = len(weapon.magazine) + 20
 
                 else:
                     self.draw_sprite2(info_loser)
 
                     display_text = 'Try Again! / versuchen / Perdiste:'
-                    self.message_display(display_text, self.display_text_pos)
+                    self.message_display2(display_text, self.display_text_pos_lost)
 
                     if device.audio.sound_enabled: device.audio.sound_loser.play()
                     pygame.display.update()
                     time.sleep(3)
                     device.stats.winner = False
+                    # device.stats.bullet_available = len(weapon.magazine)
                 #check point
             # print('control time:', pygame.time.get_ticks() - time_start)
             self.sent_msg(weapon, total_time, home.life)
@@ -257,7 +300,7 @@ class AddScreen(gen.Xscreen):
         self.font1.color = df.gold
         self.message_display('Time:' + str(int(total_time/1000)), self.time_txt_pos)
         self.font1.color = df.black
-        self.message_display('Bullets:' + str(weapon.bullet_available), self.bullet_txt_pos)
+        self.message_display('Bullets:' + str(len(weapon.magazine)), self.bullet_txt_pos)
         self.font1.color = df.red
 
     def message_display2(self, text, center):

@@ -9,7 +9,14 @@ class Button(sp.Sprite2):
 
     def __init__(self, filename, x, y, w, h):
        
-        sp.Sprite2.__init__(self, filename, x, y, w, h, 0, 0)
+        sp.Sprite2.__init__(self)
+        self.file = filename
+        self.w = w
+        self.h = h
+        self.set_image()
+        self.rect.x = x
+        self.rect.y = y
+
         self.hover_text = 'Back / Zurück/ Atras'
         self.click_text = 'Loading/ Laden/ Caragando'
         # self.font =  "monospace"
@@ -134,7 +141,15 @@ class Imap(Button):
         self.map_name = ""
         self.filename  = ""
         self.bfilename = var.assetsDir + "icons8-lock-100.png"
-        self.lockpad = sp.Sprite2(self.bfilename, x, y, int(w*0.5), int(h*0.5), 0, 0)
+
+        self.lockpad = sp.Sprite2()
+        self.lockpad.file = self.bfilename
+        self.lockpad.w = int(w*0.5)
+        self.lockpad.h = int(h*0.5)
+        self.lockpad.set_image()
+        self.lockpad.rect.x = x
+        self.lockpad.rect.y = y
+
         self.hover_text = 'Level ' + str(level) + '   /   ' + str(total_enemies) + ' Zombies'
         self.font_btn.color = df.red
 
