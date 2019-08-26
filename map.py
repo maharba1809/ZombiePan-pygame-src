@@ -95,7 +95,7 @@ class AddScreen(gen.Xscreen):
             maps.append(btns.Imap(self.map11_file, df.display_width*icon_map11_x, df.display_height*icon_map11_y, 11, 20, True, 19 ))
             maps.append(btns.Imap(self.map12_file, df.display_width*icon_map12_x, df.display_height*icon_map12_y, 12, 20, True, 20 ))
             maps.append(btns.Imap(self.map13_file, df.display_width*icon_map13_x, df.display_height*icon_map13_y, 13, 20, True, 21 ))
-            maps.append(btns.Imap(self.map14_file, df.display_width*icon_map14_x, df.display_height*icon_map14_y, 14, 20, False, 1 ))
+            maps.append(btns.Imap(self.map14_file, df.display_width*icon_map14_x, df.display_height*icon_map14_y, 14, 20, True, 22 ))
             # maps.append(sp.Imap(self.map14_file, 300, 350, 14, 20, False, 1))
             # for m in maps:
             #     m.hover_text = m.file
