@@ -76,14 +76,17 @@ class AddScreen(gen.Xscreen):
 
         while not self.stopEngine:
             for event in pygame.event.get():
+                    
+
 
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        self.stopEgine = True
+                # if event.type == pygame.KEYDOWN:
+                #     if event.key == pygame.K_ESCAPE:
+                #         self.stopEgine = True
+
 
             var.gameDisplay.fill(df.black)
             self.draw_sprite2(mapsback)
