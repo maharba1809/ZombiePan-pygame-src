@@ -95,27 +95,28 @@ class AddScreen(gen.Xscreen):
 
             if exitBtn.onClick(pygame.mouse):
                 self.stopEngine = True
-                time.sleep(1)
+                time.sleep(0.1)
 
             if btnDisableMusic.onClick(pygame.mouse):
                 device.audio.music_enabled = False
-                device.audio.play_music()
-                time.sleep(1)
+                # device.audio.play_music()
+                self.playBackMusic()
+                time.sleep(0.1)
 
             if btnEnableMusic.onClick(pygame.mouse):
                 device.audio.music_enabled = True
-                device.audio.play_music()
-                time.sleep(1)
+                self.playBackMusic()
+                time.sleep(0.1)
 
             if btnDisableSound.onClick(pygame.mouse):
                 device.audio.sound_enabled = False
-                device.audio.play_music()
-                time.sleep(1)
+                # device.audio.play_music()
+                time.sleep(0.1)
 
             if btnEnableSound.onClick(pygame.mouse):
                 device.audio.sound_enabled = True
-                device.audio.play_music()
-                time.sleep(1)
+                # device.audio.play_music()
+                time.sleep(0.1)
 
 
             self.message_display(self.opt_txt,self.header_position )

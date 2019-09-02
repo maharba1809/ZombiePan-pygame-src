@@ -15,7 +15,7 @@ class AddScreen(gen.Xscreen):
         self.font1.color = df.orange
         self.font1.font_size = 40
         self.font1.set_font()
-
+        self.backMusicFile = var.assetsDir + 'sounds/732704_Otravine_chop.wav'
 
 
     def run(self):
@@ -43,6 +43,8 @@ class AddScreen(gen.Xscreen):
         # for i in range(1, horde.limit + 1):
         #     horde.time_to_born.append(i * 100)
         #
+        self.loadMusic()
+        self.playBackMusic()
         dt = 50
         while not self.stopEngine:
             time_start = pygame.time.get_ticks()

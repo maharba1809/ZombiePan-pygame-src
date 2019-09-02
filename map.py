@@ -36,9 +36,11 @@ class AddScreen(gen.Xscreen):
         self.map13_file =self.map1_file
         self.map14_file = self.map1_file
         self.exit_file = var.assetsDir + 'Button_exit.png'
+        self.musicBackFile = var.assetsDir + 'sounds/439380__nightwolfcfm__cyclope-chase-action-drums.ogg'
 
 
-        print('map screen created')
+
+
 
 
     def run(self):
@@ -104,8 +106,10 @@ class AddScreen(gen.Xscreen):
 
         else:
             maps = device.stats.maps
-        button_back = btns.Button(self.exit_file, df.display_width*0.5, df.display_height*0.8, 100, 100)
+        button_back = btns.Button(self.exit_file, df.display_width*0.5, df.display_height*0.8, 50, 50)
         button_back.hover_text = 'Back / Zuruck / Atras'
+        self.loadMusic()
+        self.playBackMusic()
 
         total_time = 0
         while not self.stopEngine:
@@ -143,8 +147,9 @@ class AddScreen(gen.Xscreen):
                         imp.reload(play)
                         playScreen = play.AddScreen(m)
 
-                        time.sleep(0.5)
+                        # time.sleep(0.1)
                         playScreen.run()
+                        self.playBackMusic()
                         if device.stats.winner:
                             index = device.stats.level
                             if index > 0:

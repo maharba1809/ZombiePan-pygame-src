@@ -122,8 +122,16 @@ class Bullet(Sprite2):
         self.loop_index = 0
         self.fps = 0
         self.free = False
+        self.shootSoundFile = var.assetsDir + 'sounds/MP5 Firing-SoundBible.com-434501860.wav'
+        self.shootSound = []
 
-        # newbullet = self.Sprite2(var.assetsDir + 'bullet1.png', xb, yb, 12, 18, hel.u, 9)
+    def loadSounds(self):
+        self.shootSound = pygame.mixer.Sound(file=self.shootSoundFile)
+        self.shootSound.set_volume(0.1)
+
+    def playShootSound(self):
+        if device.audio.sound_enabled:
+            self.shootSound.play()
 
 class Weapon():
     def __init__(self):
@@ -141,6 +149,7 @@ class Weapon():
         if self.bullet_available > 0:
             for i in range(0, self.bullet_available):
                 b = Bullet()
+                b.loadSounds()
                 random_enemy = int(random.random() * 1000)
                 if random_enemy % 2 == 0:
                     b.file = var.assetsDir + 'bullets/bullet2.png'
@@ -179,8 +188,7 @@ class Weapon():
             self.freeBullets.append(b)
             self.magazine.remove(b)
 
-            if device.audio.sound_enabled:
-                device.audio.sound_bullet.play()
+            b.playShootSound()
 
             break
 
@@ -242,10 +250,21 @@ class Asprite(Sprite2):
         # self.rect.y = df.display_height*0.1
         # self.rect.w = 0
         # self.rect.h = 0
-        self.sound = device.audio.sound_hel
+
         self.loop_index = 0
         self.fps = 2
         self.life = 100
+
+        self.soundFile = var.assetsDir + 'sounds/helicopter.ogg'
+        self.sound = []
+
+    def loadSound(self):
+        self.sound = pygame.mixer.Sound(file=self.soundFile)
+        self.sound.set_volume(0.5)
+
+    def playSound(self):
+        if device.audio.sound_enabled:
+            self.sound.play()
 
     def load_images(self):
 
@@ -439,14 +458,49 @@ class House (Asprite):
 
 class Ammo(Sprite2):
     def __init__(self):
-
         Sprite2.__init__(self)
-
         self.file = 'assets/bullets/box5.png'
         self.w = 50
         self.h = 50
+        self.g = 0.25
+        self.floor = 0
+        self.v = 0
+        self.u = 0
+        self.soundGrabFile = var.assetsDir + 'sounds/334298__sojan__coinflic4.ogg'
+        self.soundGrab = []
+        self.soundDrop = []
+        self.soundDropFile = var.assetsDir+'sounds/38876__swuing__footstep-wood.wav'
+
+    def loadSound(self):
+        self.soundGrab = pygame.mixer.Sound(file=self.soundGrabFile)
+        self.soundGrab.set_volume(0.5)
+        self.soundDrop = pygame.mixer.Sound(file=self.soundDropFile)
+        self.soundDrop.set_volume(0.5)
+
+    def playGrabSound(self):
+        if device.audio.sound_enabled:
+            self.soundGrab.play()
+
+    def playDropSound(self):
+        if device.audio.sound_enabled:
+            self.soundDrop.play()
 
     def draw(self):
         var.gameDisplay.blit(self.image, (self.rect.x, self.rect.y))
 
+    def move(self, dt):
+        if self.rect.y >= self.floor:
+            if self.v > 0:
+                # self.jump = False
+                self.v = 0
+                self.u = 0
+                self.playDropSound()
+            # else:
+
+        else:
+            self.v += self.g * dt / 10
+        self.rect.y += self.g * self.v * dt / 10
+        # print(self.rect.x)
+
+        self.rect.x += self.u * dt / 10
 

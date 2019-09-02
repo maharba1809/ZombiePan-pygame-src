@@ -20,8 +20,8 @@ class AddScreen(gen.Xscreen):
     def __init__(self, map):
         gen.Xscreen.__init__(self)
         self.map = map
-        device.audio.music_theme = var.assetsDir + 'sounds/Little Swans Game.ogg'
-        device.audio.play_music()
+        # self.backMusicFile = var.assetsDir + 'sounds/'
+
         self.zombie_txt_pos = (0,0)
         self.exp_txt_pos = (df.display_width*0.2, 0)
         self.life_txt_pos = (df.display_width*0.4, 0)
@@ -53,7 +53,7 @@ class AddScreen(gen.Xscreen):
         imp.reload(pause)
 
         print('\n')
-        if device.audio.sound_enabled: device.audio.sound_hel.play()
+        # if device.audio.sound_enabled: device.audio.sound_hel.play()
 
         mapsback = sp.Sprite2()
         mapsback.file = self.map.filename
@@ -72,8 +72,8 @@ class AddScreen(gen.Xscreen):
         info_winner.rect.x = df.display_width * 0.5 - info_winner.w * 0.5
         info_winner.rect.y = df.display_height * 0.5 - info_winner.h * 0.5
         self.display_text_pos_win = (df.display_width * 0.5 - 100, info_winner.rect.y + info_winner.h )
-        self.display_text_pos_home =  (df.display_width * 0.2, self.display_text_pos_win[1] + 80)
-        self.display_text_pos_hel =  (df.display_width * 0.2, self.display_text_pos_home[1] + 80)
+        self.display_text_pos_home = (df.display_width * 0.2, self.display_text_pos_win[1] + 80)
+        self.display_text_pos_hel = (df.display_width * 0.2, self.display_text_pos_home[1] + 80)
 
         info_loser = sp.Sprite2()
         info_loser.file = var.assetsDir + 'disabled.png'
@@ -94,6 +94,7 @@ class AddScreen(gen.Xscreen):
 
         hel = sp.Vehicle()
         hel.load_images()
+        hel.loadSound()
 
         weapon = sp.Weapon()
         weapon.bullet_available = device.stats.bullet_available
@@ -109,6 +110,7 @@ class AddScreen(gen.Xscreen):
         dt = 1
 
         freeAmmo = []
+        pygame.mixer.music.stop()
 
         while not self.stopEngine:
             time_start = pygame.time.get_ticks()
@@ -133,10 +135,9 @@ class AddScreen(gen.Xscreen):
                         weapon.shoot_bullet()
 
 
-
                     if event.key == pygame.K_ESCAPE:
                         pauseScreen = pause.AddScreen()
-                        time.sleep(0.1)
+                        # time.sleep(0.1)
                         time_pause = pygame.time.get_ticks()
                         pauseScreen.run()
                         dt_pause = pygame.time.get_ticks()  - time_pause
@@ -151,14 +152,15 @@ class AddScreen(gen.Xscreen):
                     if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                         hel.u = 0
                         hel.v = 0
+                    hel.playSound()
 
             var.gameDisplay.fill(df.black)
             self.draw_sprite2(mapsback)
-
+            home.animate() #call home animation
             # self.draw_sprite2(hel)
             hel.animate(dt)  # callls animation defs
             # print('helicopter animate time:', pygame.time.get_ticks() - time_start)
-            home.animate() #call home animation
+
             weapon.moveBullets(dt)
             # print('move bullets time:', pygame.time.get_ticks() - time_start)
 
@@ -168,6 +170,8 @@ class AddScreen(gen.Xscreen):
                     continue
 
                 enemy.animate(dt)
+                # enemy.startJump = True
+
 
                 if enemy.rect.colliderect(home.rect):
                     enemy.preattack = True
@@ -185,7 +189,8 @@ class AddScreen(gen.Xscreen):
                             break
 
                         if device.audio.sound_enabled:
-                            device.audio.sound_attack.play()
+                            enemy.playAttackSound()
+                            # device.audio.sound_attack.play()
 
                 if enemy.rect.colliderect(hel.rect):
                     enemy.preattack = True
@@ -200,16 +205,21 @@ class AddScreen(gen.Xscreen):
                             break
 
                         if device.audio.sound_enabled:
-                            device.audio.sound_attack.play()
+                            enemy.playAttackSound()
 
+                if enemy.eyes.rect.colliderect(hel.rect):
+                    enemy.startJump = True
+                else:
+                    enemy.startJump = False
                 # Collision detection
                 if len(weapon.freeBullets)>0:
                     for bullet in weapon.freeBullets:
                         if enemy.rect.colliderect(bullet.rect):
+                            if enemy.jumping:
+                                enemy.v = 0
 
                             if device.audio.sound_enabled:
-                                if not pygame.mixer.get_busy():
-                                    device.audio.sound_col.play()
+                                bullet.playShootSound()
 
                             if enemy.alive:
                                 enemy.descrease_life()
@@ -219,16 +229,21 @@ class AddScreen(gen.Xscreen):
                                     if enemy.prize:
                                         enemy.ammo.rect.x = enemy.rect.x + enemy.rect.w*1.1
                                         enemy.ammo.rect.y = enemy.rect.y + enemy.rect.h -enemy.ammo.h
+                                        enemy.ammo.u = hel.u*0.1
+                                        enemy.ammo.v = 0
                                         freeAmmo.append(enemy.ammo)
 
                             weapon.freeBullets.remove(bullet)
 
             for box in freeAmmo:
+                box.move(dt)
                 box.draw()
                 if box.rect.colliderect(hel.rect):
                     print('extra ammo')
+                    box.playGrabSound()
                     freeAmmo.remove(box)
-                    weapon.load_extra_bullet(5)
+                    weapon.load_extra_bullet(20)
+
                     break
 
 
@@ -305,4 +320,6 @@ class AddScreen(gen.Xscreen):
 
     def message_display2(self, text, center):
         self.font2.center = center
+        self.font2.color = df.green
         self.font2.display_text(text)
+

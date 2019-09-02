@@ -17,4 +17,4 @@ display_height = 800
 total = 15
 dead_time = 0
 delay = 2
-version = '1.1.7 Aug, 2019'
+version = '1.1.8 Aug, 2019'
